@@ -15,8 +15,8 @@ app.use(express.json({ limit: '10mb' }));
 
 const frontendDistPath = path.join(__dirname, '..', 'frontend', 'dist');
 const frontendIndexPath = path.join(frontendDistPath, 'index.html');
-const dataDirPath = path.join(__dirname, 'data');
-const uploadsDirPath = path.join(__dirname, 'uploads');
+const dataDirPath = path.resolve(process.env.DATA_DIR || path.join(__dirname, 'data'));
+const uploadsDirPath = path.resolve(process.env.UPLOADS_DIR || path.join(__dirname, 'uploads'));
 const blogImagesDirPath = path.join(uploadsDirPath, 'blog-images');
 const siteSettingsFilePath = path.join(dataDirPath, 'site-settings.json');
 const contactSubmissionsFilePath = path.join(dataDirPath, 'contact-submissions.json');
@@ -29,6 +29,7 @@ const supportedImageMimeTypes = new Map([
   ['image/webp', '.webp'],
 ]);
 
+fs.mkdirSync(dataDirPath, { recursive: true });
 fs.mkdirSync(blogImagesDirPath, { recursive: true });
 
 const blogImageUpload = multer({

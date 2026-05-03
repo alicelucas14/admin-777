@@ -44,6 +44,43 @@ If port `5173` is already in use, Vite now fails clearly instead of silently mov
 npm run build
 ```
 
+## Deploy Publicly
+
+The simplest production setup for this project is one Node service:
+
+- Render builds the frontend with `npm run build`
+- Express serves the built frontend and the API from the same service
+- A persistent disk stores runtime data and uploaded blog images
+
+This repo now includes [render.yaml](render.yaml) for that setup.
+
+### Render Deployment
+
+1. Push your latest changes to GitHub.
+2. In Render, choose `New +` -> `Blueprint`.
+3. Select this GitHub repository.
+4. Render will detect `render.yaml` and create the web service plus persistent disk.
+5. Set these required environment variables before the first production login:
+
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD`
+- `ADMIN_API_TOKEN`
+
+Optional email variables:
+
+- `RESEND_API_KEY`
+- `CONTACT_TO_EMAIL`
+- `CONTACT_FROM_EMAIL`
+
+After deploy, your site will be live on the Render URL and accessible from any device.
+
+### Important Production Note
+
+Admin-edited settings, visitor logs, contact submissions, and uploaded blog images are runtime data. They are not intended to live in Git. In hosted environments they should be stored on the mounted disk configured through:
+
+- `DATA_DIR`
+- `UPLOADS_DIR`
+
 ## Backend API Endpoints
 
 - GET `/api/health`

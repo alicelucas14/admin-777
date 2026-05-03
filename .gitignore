@@ -31,6 +31,7 @@ backups/
 
 # Runtime uploads and mutable data
 backend/uploads/blog-images/
+backend/data/site-settings.json
 backend/data/admin-logins.json
 backend/data/contact-submissions.json
 backend/data/visitors.json

@@ -1,0 +1,101 @@
+{
+  "siteName": "Stars777",
+  "defaultLanguage": "en-US",
+  "maintenanceMode": false,
+  "supportEmail": "support@stars777.example",
+  "liveChatLink": "<!-- Start of LiveChat (www.livechat.com) code --> <script>     window.__lc = window.__lc || {};     window.__lc.license = 18988469;     window.__lc.integration_name = \"manual_channels\";     window.__lc.product_name = \"livechat\";     ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:\"2.0\",on:function(){i([\"on\",c.call(arguments)])},once:function(){i([\"once\",c.call(arguments)])},off:function(){i([\"off\",c.call(arguments)])},get:function(){if(!e._h)throw new Error(\"[LiveChatWidget] You can't use getters before load.\");return i([\"get\",c.call(arguments)])},call:function(){i([\"call\",c.call(arguments)])},init:function(){var n=t.createElement(\"script\");n.async=!0,n.type=\"text/javascript\",n.src=\"https://cdn.livechatinc.com/tracking.js\",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice)) </script> <noscript><a href=\"https://www.livechat.com/chat-with/18988469/\" rel=\"nofollow\">Chat with us</a>, powered by <a href=\"https://www.livechat.com/?welcome\" rel=\"noopener nofollow\" target=\"_blank\">LiveChat</a></noscript> <!-- End of LiveChat code -->",
+  "contactPage": {
+    "title": "Contact Us",
+    "intro": "We are deeply committed to delivering unparalleled service and unwavering support to ensure your experience exceeds expectations.",
+    "address": "3680 Schamberger Pass, North Catarina 01894-8381",
+    "phoneText": "Talk to us and see how we can work 1800-14-0147",
+    "emailText": "We're usually replying within 24 hours pagedone1234@gmail.com",
+    "workingHours": "Mon To Sat - 10 am To 7 pm Sunday - 11am To 5 pm",
+    "pressCopy": "Are you interested in our latest news or working on a grammarly story and need to get in touch?",
+    "supportCopy": "Are you interested in our latest news or working on a grammarly story and need to get in touch?",
+    "salesCopy": "Are you interested in our latest news or working on a grammarly story and need to get in touch?"
+  },
+  "seo": {
+    "title": "Stars777 - Online Gaming, Rummy, Teen Patti and Lottery Games",
+    "description": "Stars777 is an online gaming platform for Indian players with fast withdrawals, fair gameplay, Rummy, Teen Patti, casino games, lotteries, and reliable support.",
+    "keywords": "Stars777, online gaming India, Rummy, Teen Patti, casino games, lottery games",
+    "canonicalUrl": "https://stars777.com",
+    "ogImageUrl": ""
+  },
+  "socialLinks": [
+    {
+      "id": "facebook",
+      "platform": "Facebook",
+      "url": "https://www.facebook.com/stars777officials",
+      "iconUrl": "https://cdn.simpleicons.org/facebook/white"
+    },
+    {
+      "id": "twitter",
+      "platform": "Twitter",
+      "url": "https://x.com/stars777in",
+      "iconUrl": "https://cdn.simpleicons.org/x/white"
+    },
+    {
+      "id": "instagram",
+      "platform": "Instagram",
+      "url": "https://x.com/stars777in",
+      "iconUrl": "https://cdn.simpleicons.org/instagram/white"
+    },
+    {
+      "id": "telegram",
+      "platform": "Telegram",
+      "url": "https://t.me/stars777_prediction",
+      "iconUrl": "https://cdn.simpleicons.org/telegram/white"
+    },
+    {
+      "id": "youtube",
+      "platform": "YouTube",
+      "url": "https://youtube.com/@stars777officialpage",
+      "iconUrl": "https://cdn.simpleicons.org/youtube/white"
+    }
+  ],
+  "withdrawalPartners": [
+    {
+      "id": "paytm",
+      "name": "Paytm",
+      "url": "https://paytm.com",
+      "imageUrl": "data:image/webp;base64,UklGRhQCAABXRUJQVlA4WAoAAAAQAAAAKgAAFgAAQUxQSEUAAAABd6CojRQ4ysybwwBqcEVERCQ8eDKuYBPbVqOhy2jAD+6wgAbsUOZgY2+5ZUT/JyA/VHXGH+hC75e50IEalBgZyv1WowAAVlA4IKgBAAAwCgCdASorABcAPlEgjkUjoiEYCqwAOAUEtQBgfMBBgNtBz1WmAfqBwL57RGiu+eelR+Y/51/3HuDfx3+kf7rgJf2AKFZJnjtkVtRX14QuiLqarSMVXPSbmfAA/v9Pp384r//XQep8y6zjver8RWOidZeuX+nMROu/5dKvt9n3evdfpdzvYtCkDG0Dirq//x2n4YTQ2s8n5t+ngaofYKmvY3r07t0BVrf0ZAvPcO/U//1soP9Vp2rPACNg1QSZV9//7rxlgsZvyur3m0Bo35CffmdsTFXTlZmuMutst4JAz7KeNz83Cz12qwdFRxFFEZbUJivjzSK+icqLYdG3+r1yxVYfTOH7KxL2l/baqWTKaTTsN+6DAaPtQ/nQ7DLH/sbMmh7W9+BF+kC+LcSyENlSZATPHtINVoclJRg0OjBahFfw7N2czgtaiprcMZqdhR5wrsRPabmsYdyn64oQXOSAgSzm5nWnPZqTy5mcYPk7ohk+iMqvaV4e1B2HO39/VwxE3rHWgeD2l9TJg1s0qYPS1YlYl0LW5eqaBE4Yg55fgAuFBbPgQAAA"
+    },
+    {
+      "id": "visa",
+      "name": "Visa",
+      "url": "https://visa.com",
+      "imageUrl": "data:image/webp;base64,UklGRvQBAABXRUJQVlA4WAoAAAAQAAAAKQAAFAAAQUxQSB0AAAABFyAQSPztInqNiIgFIm2bjc2/6NPTiP5PANc6BABWUDggsAEAANAKAJ0BKioAFQA+USKORSOiIRVcBQA4BQS2AGB8wDCANYA9ADyxvY3+2b2bqUE9Jx1/57+OGewxyGiH/4DUl+Mr5X/nX0XP9sNHAF22b1GXyK72BtYwHpfl3sjo0/MAAP7/Mmx/IHWP3kJoqZyZBUh9YWnj4PpkXa8gdlTFrZ/8wX8+O3ooGeIjN3QL++VHJ0yiSLVMA7YwJ0z2vBQr3/RmQSrjdOBHpexJUEfuPfdpe/iD/J2G5Kv8nZ8PNyF7cXq548TbBenLXPhPC0ukIC/qfP9RzIv9PbH6I8RXnQemzEPU/zub1fwazCEMT1UN4pV+LPJpsXYv2eBYIJ8YqUDKh5NNxHqYsdKBApIfm3Z1Rmd/3pAYv0oF7n3TFgvN9mT1ZieXflkf9GiDIzN3KN6/rscP+W8SjWkGatBwKnV8+ZbLX5N60b+BPEHM1TiIkCgzGNJ5Cud/vgSIkLTvLx0J7hbgps2ornfz//7pzvCKleJX/QshEWPVarC6j3AsoSk2ExXSmuiw9Dn3yPMPXR8w6ZOdnL7/8zeJR+RDrVaU1YKKyv+wHxIyjs0KwAAAAA=="
+    },
+    {
+      "id": "payu",
+      "name": "PayU",
+      "url": "https://payu.in",
+      "imageUrl": "data:image/webp;base64,UklGRkwBAABXRUJQVlA4WAoAAAAQAAAAKAAAFAAAQUxQSBIAAAABD3Dn/4iIICRI8P92e0T/0ztWUDggFAEAALAFAJ0BKikAFQA+TR6NRCKhoRgNVVQoBMSxAGd9EAbw+RFAfn43mDBomjV8fCmcG8e4nfCQAAD+/xIv6QK4tjaiit9i3ZRvsZphNZcu6GgmYqND7bt5IbMR9/DC2yuItISqNNsu9OPlPvWnrLliuIxqShmG8/eA++78dwB6eqwUUQdfdriqyoGvsTrbJ6VSPWmZkps3pT43QcPrZ6rjdH7c9R05OHWu/43vF77Jnn+z4F5aDWqXDeX7oXUWvH2u93UIGeNqyIHsoz62e412G7PHzes9fnnZaiv9/u/cdZn4F/1fh3/64D66t/WbJ+WcVe3Hqqe9vZ2exHGk8U6lTpQvL+p2aDOO9UGuSdvE+EDdvQAAAA=="
+    },
+    {
+      "id": "mastercard",
+      "name": "Mastercard",
+      "url": "https://mastercard.com",
+      "imageUrl": "data:image/webp;base64,UklGRloCAABXRUJQVlA4WAoAAAAQAAAAKwAAFgAAQUxQSEwAAAABd6CojRQ4ysybwwBqcEVERCQ8eDKuYBPbVpzBBSUtWjYJiMICGmiR8kv2xEZumTKi/xNQXtQOJl2mPYy8v+zDyGVaZ2JmtKnPN3EKVlA4IOgBAADQCgCdASosABcAPlEijkUjoiEStmQ4BQS2AGNXtcoF2AzzPrAPQA8sT2R/2n9KpbIEOB3t3qK5w3pr/aeq7/oitww+TYLYDcH+LDiAiZDmBDzdE54vKKHpDZxfovFqgAD+/3aNJMx5nWv++d3r1gtmm/qn5srnImSP5eOQmq0jrL9wZZP/1VQAU/gJjZod7QYJedc/CTNj0F78V/0uiBMR4dsnv/+ug/2v/H/S6Lrmik8Kf/31f/jFqPS/v/7jLdbwCaEAZf/qtZY8cQwyKKBcOeeDk+IMJX3cPA4Ke7dPskEzIzv81rkuZN60E4V3BpF9URbBRNEp5D4Ph7ttuyTAfedl4xjIXpYxf8lHU/xmnCjg9V3fyPFX8aNPycouxZrQD+/v18r/Rxj/PKhAlPz1L/oMsU7XDQktTzmUAfNMtaOp1ARBj19tqSjMacX5MJ9uXTFOco87t+F6rKgbst3iY+jpDZ/0RyGj8x6HYtd4kH/45L/6QfYa5uS51d0wKwUSOP+m4d8Q7D9+tyXV/ie9J8OtVPQfacS5wvr+F/vL6zaaWKjh7gowxJvnfb4qG8f1yLnTvVtmMQH0dtNJEoqb4g2Ck/cJDFADFHaYS03n/1f96w18uT/Tn/DX8Sd0qT4Vxv1wdQAAAA=="
+    },
+    {
+      "id": "rupay",
+      "name": "RuPay",
+      "url": "https://rupay.co.in",
+      "imageUrl": "data:image/webp;base64,UklGRioCAABXRUJQVlA4WAoAAAAQAAAAKQAAFgAAQUxQSDQAAAABT6CYkSQ4mp73sQZrs1IbEWGeE7OCmkZSoARHyEACTnCAgtfxtnQR/Z+APtLvRQsxTSAEVlA4INABAACwCwCdASoqABcAPk0gjUQioiGYDVVUKATEsQBcJsA3jt2V7w9/u/OKuUtct/Xc4B/Q8dT/hvyZtlfnJ817NP8y+wB/Gv5n/q+u6JRF5j5p2PHofkRcMjeAfq9YO1ukwy+PoDnixnAA/v8SL/zXqBQ4NH3V4+3tJqtJODPd9T6H8Wr/ZL/tccOzgBNdf/9aKZeedssptbpv1c1KUmU4r/2jqlC5R1/H6HQhTZjDMM59l+/CP8ik22D1JSwXEBq0pgDBj/KrFfB0w02/YJFU71CZid2v9nyN0aGrTxZv5m8w94o//+RWRcg96yDIyvJ6/iX+W2i+V9TDZNTcdL0MOBT553r2gWBiK+I0/q6f/lPy9qwJw/g63Aopd+LX+DGiQH/Kv/oHbi/m8xmpvCOeGvwJD0nxk1T/yOcVRyGhun6j6bqzw/eTWcCu/iG5KbRHNLO8nOO5oFomS+G9+c385NKVieUHHrdrcuzCaWIOv37+nJfS4gMp4Wj95shgMURUBryeBUeZmF181/UcsQjgyng+uDKGfxO/TWVuxctk+HvtYAg/nLLJFNiaubuI0E28Rx/ogQ+cxHtH5utIYrVdLtLiM9YoptwtlbrQLO9AwQgAAA=="
+    },
+    {
+      "id": "upi",
+      "name": "UPI",
+      "url": "https://www.npci.org.in/what-we-do/upi/product-overview",
+      "imageUrl": "data:image/webp;base64,UklGRggCAABXRUJQVlA4WAoAAAAQAAAAKAAAFwAAQUxQSDIAAAABR2AkANI0kEFd4BtXGREBP0+zgqJIUiNuUIIxTOAgcZ795hfR/wm4UMfUF7E5b9tMWFZQOCCwAQAAUAkAnQEqKQAYAD5RHIxEo6GhGAquqDgFBLOG2wLRE8A3iP9jPRmLCO88LMY80/7n3AP47/Sf+PvABQrHviRgLmzt9l2AGVZAvHbP0HjC+joRNsAA/v92Qv6B+xDTrZ/M/qNUvjeLW2c7lsUrBh8KDrCCX+XF8pHB9jP/q7wbT/HWOazXBfLYS4GoTtbqS//vfLEwx+HFEQPRadr9k2QlEc0P3yX753NRC9SH5Cf/jUqSdebxp6abgKxYQlYG76h0U/w+3wSPHDX0zBLUJ8MKrFPiq9sEs+rhU9em248t42/ZSEhmtL+Lk4K+iW7CU5tNk8FTR6bkJFVjTT5w2KOmrQldZjw/pOfrC2HXq3E67X2Dz+yC2TJ1jef1s70E2WeqlnZXp7hzSSzHLOrcfK9fNo34Jj4A+v9xeR7dIFamuv4dwQr3H6k/rfVHv6ONd/mP/xhEurGKy+W13T79VvqKOrv0ieiwkXwYwDjuaudw3LdSPWASvA8T66VWBkHoaXflfcEf+0Znx26d9rfyUtP7yZNZXy0vO9fi0n7xnP10Ijv4ViwHN7aS5gT9QqlxCgAA"
+    },
+    {
+      "id": "phonepe",
+      "name": "PhonePe",
+      "url": "https://phonepe.com",
+      "imageUrl": "data:image/webp;base64,UklGRgQCAABXRUJQVlA4WAoAAAAQAAAAKQAAFgAAQUxQSD8AAAABX6CojRQ4uhdo4IsVJBERgeZLx9EGaCJJzQwisIAIFDBIo46KdxAE5sqUEf2fgHP3WWWLBtPMMGJ+qZhhknEAVlA4IJ4BAACQCQCdASoqABcAPlEejkQjoaGYCq1UOAUEsQBcWgo//DPo3/Wt4Bj3v6rynfmL/ae4B/If5//p+Ai/U8J6yS6+T1I/XJ5qZzgS/TK7hDGwUcIUv+iAAP7+7Dn7qXO7V6NcGAj4u7/Uqo3TitPcX5n9oHtDQCex1lnmwn3Jy3+UdYbBuo1WAeScOgJhufhS/NdteMtIaCMOS//Q73tqeFb2boB2fmXFs20kPacuha6AV5+my46BmeL+fsVd9sNOi/vIkPZP/9b4apM+/897MNv2NH/vV35aQCIukzL84puUKsEXooJdvkAna6z9e8y5/U7OSpUk5z/MJquax2+oFfq5+fptiDNsL0n3nLKx8yiX0dUJP09dodiBSWa9/ioef3+4mXy/RDTk0w//NiLq3hzIcfuYXz9FWtaItfnUe6AUH7jD/05qqBMzgBxnN3bxOMhpi7cqqakQ6xfhvvJ7Lv/s1XN+09HX3TwxDi1H/wAiGS/5sjUnvxG9J6Xh/P4++pKP8YfLLxCcayCCEwQ4XwPGtqPZI7KfkDrTaFiAAAA="
+    }
+  ]
+}

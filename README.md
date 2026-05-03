@@ -60,7 +60,8 @@ This repo now includes [render.yaml](render.yaml) for that setup.
 2. In Render, choose `New +` -> `Blueprint`.
 3. Select this GitHub repository.
 4. Render will detect `render.yaml` and create the web service plus persistent disk.
-5. Set these required environment variables before the first production login:
+5. Use a Render plan that supports persistent disks. The included blueprint is set to `starter` because the app stores uploads and runtime data.
+6. Set these required environment variables before the first production login:
 
 - `ADMIN_USERNAME`
 - `ADMIN_PASSWORD`

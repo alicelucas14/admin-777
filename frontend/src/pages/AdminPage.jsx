@@ -8,6 +8,7 @@ import FaqSection from '../components/FaqSection'
 import GlobalSettingsSection from '../components/GlobalSettingsSection'
 import SeoSettingsSection from '../components/SeoSettingsSection'
 import ContactMessagesSection from '../components/ContactMessagesSection'
+import TermsConditionsSection from '../components/TermsConditionsSection'
 import useWebsiteData from '../hooks/useWebsiteData'
 
 function AdminPage() {
@@ -61,6 +62,7 @@ function AdminPage() {
       'reviews',
       'faqs',
       'contact-messages',
+      'terms-conditions',
       'seo',
       'site-settings',
     ])
@@ -232,6 +234,16 @@ function AdminPage() {
       return <ContactMessagesSection submissions={data.contactSubmissions} />
     }
 
+    if (activePanel === 'terms-conditions') {
+      return (
+        <TermsConditionsSection
+          key={JSON.stringify(data.siteSettings?.termsPage || {})}
+          termsPage={data.siteSettings?.termsPage}
+          onUpdateTerms={updateSiteSettings}
+        />
+      )
+    }
+
     if (activePanel === 'seo') {
       return (
         <SeoSettingsSection
@@ -381,6 +393,7 @@ const defaultNavigationGroups = [
   {
     group: 'configuration',
     items: [
+      { id: 'terms-conditions', label: 'Terms & Conditions', path: '/admin/terms-conditions' },
       { id: 'seo', label: 'SEO', path: '/admin/seo' },
       { id: 'site-settings', label: 'Site Settings', path: '/admin/site-settings' },
     ],

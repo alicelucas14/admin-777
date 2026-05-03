@@ -163,6 +163,15 @@ function getPageSeo(pathname) {
     }
   }
 
+  if (pathname === '/terms-of-service') {
+    return {
+      title: 'Terms of Service',
+      description:
+        'Read the Stars777 Terms of Service, account responsibilities, prohibited conduct, and legal conditions of use.',
+      keywords: 'Stars777 terms of service, terms and conditions, legal terms, user agreement',
+    }
+  }
+
   return {
     title: '',
     description: '',

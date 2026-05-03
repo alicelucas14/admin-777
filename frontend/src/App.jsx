@@ -8,6 +8,7 @@ import BlogPage from './pages/BlogPage'
 import BlogDetailPage from './pages/BlogDetailPage'
 import ContactPage from './pages/ContactPage'
 import FaqPage from './pages/FaqPage'
+import TermsOfServicePage from './pages/TermsOfServicePage'
 import SeoManager from './components/SeoManager'
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/blog/:slug" element={<BlogDetailPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/faq" element={<FaqPage />} />
+        <Route path="/terms-of-service" element={<TermsOfServicePage />} />
         <Route path="/admin/*" element={<AdminPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

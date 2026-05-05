@@ -5,6 +5,8 @@ import GamesSection from '../components/GamesSection'
 import PostsBlogsSection from '../components/PostsBlogsSection'
 import ReviewsSection from '../components/ReviewsSection'
 import FaqSection from '../components/FaqSection'
+import JackpotSettingsSection from '../components/JackpotSettingsSection'
+import ContactSettingsSection from '../components/ContactSettingsSection'
 import GlobalSettingsSection from '../components/GlobalSettingsSection'
 import SeoSettingsSection from '../components/SeoSettingsSection'
 import ContactMessagesSection from '../components/ContactMessagesSection'
@@ -20,6 +22,10 @@ function AdminPage() {
   const [authLoading, setAuthLoading] = useState(false)
   const [navigationGroups, setNavigationGroups] = useState([])
   const [navError, setNavError] = useState('')
+  const [healthStatus, setHealthStatus] = useState({
+    tone: 'checking',
+    label: 'Checking backend',
+  })
   const [adminTheme, setAdminTheme] = useState(
     () => localStorage.getItem('admin_theme') || 'light',
   )
@@ -62,6 +68,8 @@ function AdminPage() {
       'reviews',
       'faqs',
       'contact-messages',
+      'jackpot',
+      'contact-page',
       'terms-conditions',
       'seo',
       'site-settings',
@@ -93,6 +101,33 @@ function AdminPage() {
 
     clearAdminSession('Your admin session expired. Please sign in again with the correct credentials.')
   }, [unauthorized])
+
+  useEffect(() => {
+    let cancelled = false
+
+    const checkBackendHealth = async () => {
+      try {
+        const response = await fetch('/api/health')
+        if (!response.ok) {
+          throw new Error('health_error')
+        }
+
+        if (!cancelled) {
+          setHealthStatus({ tone: 'online', label: 'Backend online' })
+        }
+      } catch {
+        if (!cancelled) {
+          setHealthStatus({ tone: 'offline', label: 'Backend offline' })
+        }
+      }
+    }
+
+    checkBackendHealth()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   useEffect(() => {
     if (!token) {
@@ -234,6 +269,26 @@ function AdminPage() {
       return <ContactMessagesSection submissions={data.contactSubmissions} />
     }
 
+    if (activePanel === 'jackpot') {
+      return (
+        <JackpotSettingsSection
+          key={JSON.stringify(data.siteSettings?.jackpotSection || {})}
+          siteSettings={data.siteSettings}
+          onUpdateSettings={updateSiteSettings}
+        />
+      )
+    }
+
+    if (activePanel === 'contact-page') {
+      return (
+        <ContactSettingsSection
+          key={JSON.stringify(data.siteSettings?.contactPage || {})}
+          siteSettings={data.siteSettings}
+          onUpdateSettings={updateSiteSettings}
+        />
+      )
+    }
+
     if (activePanel === 'terms-conditions') {
       return (
         <TermsConditionsSection
@@ -270,6 +325,10 @@ function AdminPage() {
           <img className="admin-login-logo" src="/Stars777-Logo.png" alt="Stars777" />
           <div className="admin-login-copy">
             <h1 id="admin-login-title">Admin Panel</h1>
+            <div className={`admin-login-health admin-login-health--${healthStatus.tone}`}>
+              <span className="admin-login-health__dot" aria-hidden="true" />
+              <span>{healthStatus.label}</span>
+            </div>
           </div>
 
           <form className="auth-form admin-login-form" onSubmit={handleLogin}>
@@ -393,6 +452,8 @@ const defaultNavigationGroups = [
   {
     group: 'configuration',
     items: [
+      { id: 'jackpot', label: 'Jackpot', path: '/admin/jackpot' },
+      { id: 'contact-page', label: 'Contact Page', path: '/admin/contact-page' },
       { id: 'terms-conditions', label: 'Terms & Conditions', path: '/admin/terms-conditions' },
       { id: 'seo', label: 'SEO', path: '/admin/seo' },
       { id: 'site-settings', label: 'Site Settings', path: '/admin/site-settings' },

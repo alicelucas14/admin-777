@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
   const [submitError, setSubmitError] = useState('')
@@ -8,6 +8,11 @@ function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
   const [partnerRows, setPartnerRows] = useState(() =>
     normalizePartnerRows(siteSettings?.withdrawalPartners),
   )
+
+  useEffect(() => {
+    setSocialRows(normalizeSocialRows(siteSettings?.socialLinks))
+    setPartnerRows(normalizePartnerRows(siteSettings?.withdrawalPartners))
+  }, [siteSettings])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -21,17 +26,6 @@ function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
       maintenanceMode: formData.get('maintenanceMode') === 'on',
       supportEmail: String(formData.get('supportEmail') || ''),
       liveChatLink: String(formData.get('liveChatLink') || ''),
-      contactPage: {
-        title: String(formData.get('contactTitle') || ''),
-        intro: String(formData.get('contactIntro') || ''),
-        address: String(formData.get('contactAddress') || ''),
-        phoneText: String(formData.get('contactPhoneText') || ''),
-        emailText: String(formData.get('contactEmailText') || ''),
-        workingHours: String(formData.get('contactWorkingHours') || ''),
-        pressCopy: String(formData.get('contactPressCopy') || ''),
-        supportCopy: String(formData.get('contactSupportCopy') || ''),
-        salesCopy: String(formData.get('contactSalesCopy') || ''),
-      },
       socialLinks: socialRows
         .map((row) => ({
           id: row.id,
@@ -140,7 +134,7 @@ function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
         <div className="games-manage-header">
           <div>
             <h3>Global Settings</h3>
-            <p>Edit site details and footer social media links.</p>
+            <p>Edit site details, footer social media links, and withdrawal partners.</p>
           </div>
         </div>
 
@@ -173,78 +167,6 @@ function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
               defaultChecked={Boolean(siteSettings?.maintenanceMode)}
             />
             <span>Maintenance Mode</span>
-          </label>
-
-          <div className="settings-form-divider">
-            <h4>Contact Page Information</h4>
-          </div>
-          <label>
-            <span>Contact Title</span>
-            <input name="contactTitle" defaultValue={siteSettings?.contactPage?.title || ''} />
-          </label>
-          <label>
-            <span>Contact Intro</span>
-            <textarea
-              name="contactIntro"
-              rows={3}
-              defaultValue={siteSettings?.contactPage?.intro || ''}
-            />
-          </label>
-          <label>
-            <span>Address Text</span>
-            <textarea
-              name="contactAddress"
-              rows={3}
-              defaultValue={siteSettings?.contactPage?.address || ''}
-            />
-          </label>
-          <label>
-            <span>Contact Phone Text</span>
-            <textarea
-              name="contactPhoneText"
-              rows={3}
-              defaultValue={siteSettings?.contactPage?.phoneText || ''}
-            />
-          </label>
-          <label>
-            <span>Email Text</span>
-            <textarea
-              name="contactEmailText"
-              rows={3}
-              defaultValue={siteSettings?.contactPage?.emailText || ''}
-            />
-          </label>
-          <label>
-            <span>Working Hours</span>
-            <textarea
-              name="contactWorkingHours"
-              rows={3}
-              defaultValue={siteSettings?.contactPage?.workingHours || ''}
-            />
-          </label>
-          <label>
-            <span>Press Card Text</span>
-            <textarea
-              name="contactPressCopy"
-              rows={3}
-              defaultValue={siteSettings?.contactPage?.pressCopy || ''}
-            />
-          </label>
-          <label>
-            <span>Help & Supports Card Text</span>
-            <textarea
-              name="contactSupportCopy"
-              rows={3}
-              defaultValue={siteSettings?.contactPage?.supportCopy || ''}
-            />
-          </label>
-          <label>
-            <span>Sales Card Text</span>
-            <textarea
-              name="contactSalesCopy"
-              rows={3}
-              defaultValue={siteSettings?.contactPage?.salesCopy || ''}
-            />
           </label>
 
           <div className="settings-form-divider settings-social-header">

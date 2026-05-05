@@ -9,6 +9,13 @@ npm install
 npm run dev
 ```
 
+If you are using Windows PowerShell and `npm` resolves to the `npm.ps1` wrapper on this machine, use `npm.cmd` instead:
+
+```powershell
+npm.cmd install
+npm.cmd run dev
+```
+
 This starts:
 - Frontend: http://127.0.0.1:5173
 - Admin Panel: http://127.0.0.1:5173/admin
@@ -21,6 +28,13 @@ Public frontend does not show any admin link. Open `/admin` directly for admin a
 ```bash
 npm run dev:frontend
 npm run dev:backend
+```
+
+PowerShell equivalent when needed:
+
+```powershell
+npm.cmd run dev:frontend
+npm.cmd run dev:backend
 ```
 
 Or, if you prefer the production-style backend process in a separate terminal:
@@ -42,6 +56,12 @@ If port `5173` is already in use, Vite now fails clearly instead of silently mov
 
 ```bash
 npm run build
+```
+
+PowerShell equivalent when needed:
+
+```powershell
+npm.cmd run build
 ```
 
 ## Backend API Endpoints

@@ -22,6 +22,12 @@ const siteSettingsFilePath = path.join(dataDirPath, 'site-settings.json');
 const contactSubmissionsFilePath = path.join(dataDirPath, 'contact-submissions.json');
 const adminLoginsFilePath = path.join(dataDirPath, 'admin-logins.json');
 const visitorsFilePath = path.join(dataDirPath, 'visitors.json');
+const adminDevOrigin = String(process.env.ADMIN_DEV_ORIGIN || 'http://127.0.0.1:5173').replace(/\/$/, '');
+const adminDevRedirectEnabled = process.env.ADMIN_DEV_REDIRECT !== 'false';
+const devServerHealthCache = {
+  expiresAt: 0,
+  isReachable: false,
+};
 
 const supportedImageMimeTypes = new Map([
   ['image/jpeg', '.jpg'],
@@ -47,6 +53,68 @@ function buildDefaultTermsPage() {
       '11. Changes to Terms\n\nWe reserve the right to update or modify these Terms at any time without prior notice. We will post the updated Terms on the Application. Your continued use of the Application or Services after any such changes constitutes your acceptance of the new Terms.',
       '12. Contact Us\n\nIf you have any questions about these Terms, please contact us',
     ].join('\n\n'),
+  };
+}
+
+function buildDefaultContactPage() {
+  return {
+    title: 'Contact Us',
+    intro:
+      'We are deeply committed to delivering unparalleled service and unwavering support to ensure your experience exceeds expectations.',
+    address: '3680 Schamberger Pass, North Catarina 01894-8381',
+    phoneText: 'Talk to us and see how we can work 1800-14-0147',
+    emailText: "We're usually replying within 24 hours pagedone1234@gmail.com",
+    workingHours: 'Mon To Sat - 10 am To 7 pm Sunday - 11am To 5 pm',
+    pressCopy:
+      'Are you interested in our latest news or working on a grammarly story and need to get in touch?',
+    supportCopy:
+      'Are you interested in our latest news or working on a grammarly story and need to get in touch?',
+    salesCopy:
+      'Are you interested in our latest news or working on a grammarly story and need to get in touch?',
+    liveChatImageUrl: '',
+    emailCardImageUrl: '',
+    callbackCardImageUrl: '',
+    faqVisualImageUrl: '',
+  };
+}
+
+function buildDefaultJackpotSection() {
+  return {
+    title: 'JACKPOT',
+    prizePoolLabel: 'Prize pool:',
+    totalAmount: 6122526.03,
+    items: [
+      {
+        id: 'aztecs-millions',
+        title: "Aztec's Millions",
+        amount: 1797081.18,
+        imageUrl: '',
+      },
+      {
+        id: 'megasaur',
+        title: 'Megasaur',
+        amount: 1027029.02,
+        imageUrl: '',
+      },
+      {
+        id: 'jackpot-pinatas-deluxe',
+        title: 'Jackpot Pinatas Deluxe',
+        amount: 267536.73,
+        imageUrl: '',
+      },
+      {
+        id: 'spirit-of-the-inca',
+        title: 'Spirit of the Inca',
+        amount: 264155.17,
+        imageUrl: '',
+      },
+      {
+        id: 'shopping-spree-ii',
+        title: 'Shopping Spree II',
+        amount: 199525.7,
+        imageUrl: '',
+      },
+    ],
   };
 }
 
@@ -241,21 +309,8 @@ const store = {
     supportEmail: 'support@stars777.example',
     liveChatLink: 'https://wa.me/',
     termsPage: buildDefaultTermsPage(),
-    contactPage: {
-      title: 'Contact Us',
-      intro:
-        'We are deeply committed to delivering unparalleled service and unwavering support to ensure your experience exceeds expectations.',
-      address: '3680 Schamberger Pass, North Catarina 01894-8381',
-      phoneText: 'Talk to us and see how we can work 1800-14-0147',
-      emailText: "We're usually replying within 24 hours pagedone1234@gmail.com",
-      workingHours: 'Mon To Sat - 10 am To 7 pm Sunday - 11am To 5 pm',
-      pressCopy:
-        'Are you interested in our latest news or working on a grammarly story and need to get in touch?',
-      supportCopy:
-        'Are you interested in our latest news or working on a grammarly story and need to get in touch?',
-      salesCopy:
-        'Are you interested in our latest news or working on a grammarly story and need to get in touch?',
-    },
+    contactPage: buildDefaultContactPage(),
+    jackpotSection: buildDefaultJackpotSection(),
     seo: {
       title: 'Stars777 - Online Gaming, Rummy, Teen Patti and Lottery Games',
       description:
@@ -482,6 +537,16 @@ app.get('/api/admin/navigation', (_req, res) => {
     {
       group: 'configuration',
       items: [
+        {
+          id: 'jackpot',
+          label: 'Jackpot',
+          path: '/admin/jackpot',
+        },
+        {
+          id: 'contact-page',
+          label: 'Contact Page',
+          path: '/admin/contact-page',
+        },
         {
           id: 'terms-conditions',
           label: 'Terms & Conditions',
@@ -1039,9 +1104,14 @@ app.use((req, res, next) => {
   return express.static(frontendDistPath)(req, res, next);
 });
 
-app.get(/^(?!\/api).*/, (req, res) => {
+app.get(/^(?!\/api).*/, async (req, res) => {
   if (req.path.startsWith('/admin')) {
     res.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+
+    const redirectTarget = await getLocalAdminRedirectTarget(req);
+    if (redirectTarget) {
+      return res.redirect(307, redirectTarget);
+    }
   }
 
   if (!fs.existsSync(frontendIndexPath)) {
@@ -1067,6 +1137,51 @@ function toSlug(value) {
     .trim()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
+}
+
+async function getLocalAdminRedirectTarget(req) {
+  if (!adminDevRedirectEnabled || process.env.NODE_ENV === 'production') {
+    return null;
+  }
+
+  if (!req.path.startsWith('/admin') || !isLocalAdminRequest(req)) {
+    return null;
+  }
+
+  const canReachDevServer = await isAdminDevServerReachable();
+  if (!canReachDevServer) {
+    return null;
+  }
+
+  return `${adminDevOrigin}${req.originalUrl || req.url || req.path}`;
+}
+
+function isLocalAdminRequest(req) {
+  const host = String(req.hostname || '').toLowerCase();
+  return host === 'localhost' || host === '127.0.0.1' || host === '::1';
+}
+
+async function isAdminDevServerReachable() {
+  const now = Date.now();
+  if (devServerHealthCache.expiresAt > now) {
+    return devServerHealthCache.isReachable;
+  }
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 800);
+    const response = await fetch(adminDevOrigin, {
+      method: 'GET',
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    devServerHealthCache.isReachable = response.ok;
+  } catch {
+    devServerHealthCache.isReachable = false;
+  }
+
+  devServerHealthCache.expiresAt = now + 5000;
+  return devServerHealthCache.isReachable;
 }
 
 function normalizeStatus(value) {
@@ -1140,6 +1255,7 @@ function sanitizeSiteSettingsPayload(payload) {
     liveChatLink: String(payload.liveChatLink || '').trim(),
     termsPage: sanitizeTermsPageSettings(payload.termsPage || {}),
     contactPage: sanitizeContactPageSettings(payload.contactPage || {}),
+    jackpotSection: sanitizeJackpotSectionSettings(payload.jackpotSection || {}),
     seo: sanitizeSeoPayload(payload.seo || {}),
     socialLinks: normalizeSocialLinks(payload.socialLinks),
     withdrawalPartners: normalizeWithdrawalPartners(payload.withdrawalPartners),
@@ -1177,6 +1293,7 @@ function loadSiteSettings() {
       termsPage: sanitizeTermsPageSettings(savedSettings.termsPage || {}),
       seo: sanitizeSeoPayload(savedSettings.seo || store.siteSettings.seo || {}),
       contactPage: sanitizeContactPageSettings(savedSettings.contactPage || {}),
+      jackpotSection: sanitizeJackpotSectionSettings(savedSettings.jackpotSection || {}),
       socialLinks: normalizeSocialLinks(savedSettings.socialLinks),
       withdrawalPartners: normalizeWithdrawalPartners(savedSettings.withdrawalPartners),
     };
@@ -1293,7 +1410,7 @@ function sanitizeSeoPayload(payload) {
 }
 
 function sanitizeContactPageSettings(payload) {
-  const current = store.siteSettings?.contactPage || {};
+  const current = store.siteSettings?.contactPage || buildDefaultContactPage();
 
   return {
     title: String(payload.title || '').trim() || current.title || 'Contact Us',
@@ -1305,7 +1422,71 @@ function sanitizeContactPageSettings(payload) {
     pressCopy: String(payload.pressCopy || '').trim() || current.pressCopy || '',
     supportCopy: String(payload.supportCopy || '').trim() || current.supportCopy || '',
     salesCopy: String(payload.salesCopy || '').trim() || current.salesCopy || '',
+    liveChatImageUrl: String(payload.liveChatImageUrl || '').trim() || current.liveChatImageUrl || '',
+    emailCardImageUrl: String(payload.emailCardImageUrl || '').trim() || current.emailCardImageUrl || '',
+    callbackCardImageUrl: String(payload.callbackCardImageUrl || '').trim() || current.callbackCardImageUrl || '',
+    faqVisualImageUrl: String(payload.faqVisualImageUrl || '').trim() || current.faqVisualImageUrl || '',
   };
+}
+
+function sanitizeJackpotSectionSettings(payload) {
+  const current = store.siteSettings?.jackpotSection || buildDefaultJackpotSection();
+  const defaultSection = buildDefaultJackpotSection();
+  const items = normalizeJackpotItems(payload.items, current.items || defaultSection.items);
+
+  return {
+    title: String(payload.title || '').trim() || current.title || defaultSection.title,
+    prizePoolLabel:
+      String(payload.prizePoolLabel || '').trim() ||
+      current.prizePoolLabel ||
+      defaultSection.prizePoolLabel,
+    totalAmount: calculateJackpotTotal(items),
+    items,
+  };
+}
+
+function normalizeJackpotItems(value, fallbackItems = []) {
+  const entries = Array.isArray(value) ? value : [];
+  const fallback = Array.isArray(fallbackItems) ? fallbackItems : [];
+  const normalized = entries
+    .map((entry, index) => {
+      const title = String(entry?.title || '').trim();
+      const imageUrl = String(entry?.imageUrl || '').trim();
+      const amount = normalizeJackpotAmount(entry?.amount, 0);
+
+      if (!title) {
+        return null;
+      }
+
+      return {
+        id: String(entry?.id || toSlug(title) || `jackpot-item-${index + 1}`).trim(),
+        title,
+        amount,
+        imageUrl,
+      };
+    })
+    .filter(Boolean);
+
+  return normalized.length > 0 ? normalized : fallback;
+}
+
+function normalizeJackpotAmount(value, fallback) {
+  const amount = Number(value);
+  if (Number.isFinite(amount) && amount >= 0) {
+    return Number(amount.toFixed(2));
+  }
+
+  const safeFallback = Number(fallback);
+  return Number.isFinite(safeFallback) && safeFallback >= 0 ? Number(safeFallback.toFixed(2)) : 0;
+}
+
+function calculateJackpotTotal(items) {
+  return Number(
+    (Array.isArray(items) ? items : []).reduce(
+      (sum, item) => sum + normalizeJackpotAmount(item?.amount, 0),
+      0,
+    ).toFixed(2),
+  );
 }
 
 function sanitizeContactPayload(payload) {

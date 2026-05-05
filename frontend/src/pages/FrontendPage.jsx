@@ -5,6 +5,7 @@ import Footer from '../components/Footer'
 import ReviewCarousel from '../components/ReviewCarousel'
 import LiveChatWidget from '../components/LiveChatWidget'
 import HeroSection from '../components/HeroSection'
+import JackpotSection from '../components/JackpotSection'
 import { getBlogExcerptText } from '../utils/blogContent'
 
 function FrontendPage() {
@@ -97,6 +98,8 @@ function FrontendPage() {
       <HeroSection loading={gamesLoading} error={gamesError} />
 
       <main>
+        <JackpotSection />
+
         <section id="about-us" className="section-block">
           <h2>About Us</h2>
           <div className="about-us-layout">

@@ -6,8 +6,10 @@ import PostsBlogsSection from '../components/PostsBlogsSection'
 import ReviewsSection from '../components/ReviewsSection'
 import FaqSection from '../components/FaqSection'
 import JackpotSettingsSection from '../components/JackpotSettingsSection'
+import PopupCampaignSettingsSection from '../components/PopupCampaignSettingsSection'
 import ContactSettingsSection from '../components/ContactSettingsSection'
 import GlobalSettingsSection from '../components/GlobalSettingsSection'
+import RummySectionSettingsSection from '../components/RummySectionSettingsSection'
 import SeoSettingsSection from '../components/SeoSettingsSection'
 import ContactMessagesSection from '../components/ContactMessagesSection'
 import TermsConditionsSection from '../components/TermsConditionsSection'
@@ -69,6 +71,8 @@ function AdminPage() {
       'faqs',
       'contact-messages',
       'jackpot',
+      'popups',
+      'rummy-section',
       'contact-page',
       'terms-conditions',
       'seo',
@@ -279,6 +283,26 @@ function AdminPage() {
       )
     }
 
+    if (activePanel === 'popups') {
+      return (
+        <PopupCampaignSettingsSection
+          key={JSON.stringify(data.siteSettings?.popupCampaign || {})}
+          siteSettings={data.siteSettings}
+          onUpdateSettings={updateSiteSettings}
+        />
+      )
+    }
+
+    if (activePanel === 'rummy-section') {
+      return (
+        <RummySectionSettingsSection
+          key={JSON.stringify(data.siteSettings?.homepageFaqSection || {})}
+          siteSettings={data.siteSettings}
+          onUpdateSettings={updateSiteSettings}
+        />
+      )
+    }
+
     if (activePanel === 'contact-page') {
       return (
         <ContactSettingsSection
@@ -453,6 +477,8 @@ const defaultNavigationGroups = [
     group: 'configuration',
     items: [
       { id: 'jackpot', label: 'Jackpot', path: '/admin/jackpot' },
+      { id: 'popups', label: 'Popups', path: '/admin/popups' },
+      { id: 'rummy-section', label: 'Rummy Section', path: '/admin/rummy-section' },
       { id: 'contact-page', label: 'Contact Page', path: '/admin/contact-page' },
       { id: 'terms-conditions', label: 'Terms & Conditions', path: '/admin/terms-conditions' },
       { id: 'seo', label: 'SEO', path: '/admin/seo' },

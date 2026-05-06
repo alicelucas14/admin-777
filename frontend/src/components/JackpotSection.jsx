@@ -40,17 +40,17 @@ function JackpotSection() {
 
   return (
     <section id="jackpot" className="section-block jackpot-section">
-      <div className="jackpot-panel">
-        <div className="jackpot-heading">
-          <img
-            src="/JACKPOT.webp"
-            alt={jackpotSection.title}
-            className="jackpot-heading__image"
-            loading="eager"
-            decoding="async"
-          />
-        </div>
+      <div className="jackpot-heading">
+        <img
+          src="/JACKPOT.webp"
+          alt={jackpotSection.title}
+          className="jackpot-heading__image"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
 
+      <div className="jackpot-panel">
         <p className="jackpot-pool-label">{jackpotSection.prizePoolLabel}</p>
         <p className="jackpot-total" aria-label={`Total jackpot ${formatInr(totalAmount)}`}>
           {formatInr(totalAmount)}

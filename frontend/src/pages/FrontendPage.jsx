@@ -14,7 +14,7 @@ function FrontendPage() {
   const [publicGames, setPublicGames] = useState([])
   const [blogPosts, setBlogPosts] = useState([])
   const [publicReviews, setPublicReviews] = useState([])
-  const [publicFaqs, setPublicFaqs] = useState([])
+  const [siteSettings, setSiteSettings] = useState(null)
   const [gamesLoading, setGamesLoading] = useState(true)
   const [gamesError, setGamesError] = useState('')
 
@@ -29,32 +29,37 @@ function FrontendPage() {
       setGamesError('')
 
       try {
-        const [gamesResponse, blogResponse, reviewsResponse, faqsResponse] = await Promise.all([
+        const [gamesResponse, blogResponse, reviewsResponse, siteSettingsResponse] = await Promise.all([
           fetch(`${publicApiBase}/games`),
           fetch(`${publicApiBase}/blog-posts`),
           fetch(`${publicApiBase}/reviews`),
-          fetch(`${publicApiBase}/faqs`),
+          fetch(`${publicApiBase}/site-settings`),
         ])
 
-        if (!gamesResponse.ok || !blogResponse.ok || !reviewsResponse.ok || !faqsResponse.ok) {
+        if (
+          !gamesResponse.ok ||
+          !blogResponse.ok ||
+          !reviewsResponse.ok ||
+          !siteSettingsResponse.ok
+        ) {
           throw new Error('games_fetch_failed')
         }
 
-        const [gamesResult, blogResult, reviewsResult, faqsResult] = await Promise.all([
+        const [gamesResult, blogResult, reviewsResult, siteSettingsResult] = await Promise.all([
           gamesResponse.json(),
           blogResponse.json(),
           reviewsResponse.json(),
-          faqsResponse.json(),
+          siteSettingsResponse.json(),
         ])
 
         setPublicGames(Array.isArray(gamesResult) ? gamesResult : [])
         setBlogPosts(Array.isArray(blogResult) ? blogResult : [])
         setPublicReviews(Array.isArray(reviewsResult) ? reviewsResult : [])
-        setPublicFaqs(Array.isArray(faqsResult) ? faqsResult : [])
+        setSiteSettings(siteSettingsResult && typeof siteSettingsResult === 'object' ? siteSettingsResult : null)
       } catch {
         setBlogPosts([])
         setPublicReviews([])
-        setPublicFaqs([])
+        setSiteSettings(null)
         setGamesError('Games are temporarily unavailable right now.')
       } finally {
         setGamesLoading(false)
@@ -82,8 +87,8 @@ function FrontendPage() {
   ]
   const featuredGames = publicGames.slice(0, 3)
   const featuredBlogPosts = blogPosts.slice(0, 3)
-  const faqItems = publicFaqs
-  const featuredFaqs = faqItems.slice(0, 3)
+  const homepageFaqSection = normalizeHomepageFaqSection(siteSettings?.homepageFaqSection)
+  const faqItems = homepageFaqSection.items
   return (
     <div className="site-shell">
       <Header
@@ -99,6 +104,48 @@ function FrontendPage() {
 
       <main>
         <JackpotSection />
+
+        <section id="faq" className="section-block faq-showcase-section">
+          <div className="faq-showcase-layout">
+            <div className="faq-showcase-column">
+              <h2>{homepageFaqSection.title}</h2>
+
+              <div className="faq-wrap faq-showcase-wrap">
+                {faqItems.map((item) => {
+                  const isOpen = openFaqId === item.id
+
+                  return (
+                    <article key={item.id} className="faq-item">
+                      <button
+                        type="button"
+                        className={`faq-trigger ${isOpen ? 'is-active' : ''}`}
+                        aria-expanded={isOpen}
+                        onClick={() => setOpenFaqId((current) => (current === item.id ? null : item.id))}
+                      >
+                        <span>{item.question}</span>
+                        <span className={`faq-icon ${isOpen ? 'open' : ''}`}>v</span>
+                      </button>
+
+                      {isOpen ? <p className="faq-answer">{item.answer}</p> : null}
+                    </article>
+                  )
+                })}
+
+                {faqItems.length === 0 ? <p className="lead-copy">No FAQ items published yet.</p> : null}
+              </div>
+            </div>
+
+            <div className="faq-showcase-visual" aria-hidden="true">
+              <img
+                src={homepageFaqSection.imageUrl || defaultHomepageFaqSection.imageUrl}
+                alt=""
+                className="faq-showcase-image"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
+        </section>
 
         <section id="about-us" className="section-block">
           <h2>About Us</h2>
@@ -219,42 +266,6 @@ function FrontendPage() {
           {publicReviews.length === 0 ? <p className="lead-copy">No reviews published yet.</p> : null}
         </section>
 
-        <section id="faq" className="section-block faq-section">
-          <h2>Frequently Asked Questions</h2>
-
-          <div className="faq-wrap">
-            {featuredFaqs.map((item) => {
-              const isOpen = openFaqId === item.id
-
-              return (
-                <article key={item.id} className="faq-item">
-                  <button
-                    type="button"
-                    className="faq-trigger"
-                    aria-expanded={isOpen}
-                    onClick={() => setOpenFaqId((current) => (current === item.id ? null : item.id))}
-                  >
-                    <span>{item.question}</span>
-                    <span className={`faq-icon ${isOpen ? 'open' : ''}`}>v</span>
-                  </button>
-
-                  {isOpen ? <p className="faq-answer">{item.answer}</p> : null}
-                </article>
-              )
-            })}
-
-            {faqItems.length === 0 ? <p className="lead-copy">No FAQ items published yet.</p> : null}
-          </div>
-
-          {faqItems.length > featuredFaqs.length ? (
-            <div className="public-games-actions">
-              <Link to="/faq" className="public-games-view-all">
-                See More
-              </Link>
-            </div>
-          ) : null}
-        </section>
-
       </main>
 
       <Footer />
@@ -278,6 +289,94 @@ function formatPublicDate(value) {
 
 function getBlogExcerpt(content) {
   return getBlogExcerptText(content)
+}
+
+const defaultHomepageFaqs = [
+  {
+    id: 'fallback-1',
+    question: 'How Do I Claim My Welcome Bonus?',
+    answer:
+      'Create your Stars777 account, complete the basic verification steps, and check the active offer shown in your account area. Bonus availability can vary by campaign and eligibility.',
+  },
+  {
+    id: 'fallback-2',
+    question: 'What Makes Stars777 Different?',
+    answer:
+      'Stars777 focuses on fast withdrawals, a wide mix of popular games, and a player-first experience built around reliability, transparency, and responsive support.',
+  },
+  {
+    id: 'fallback-3',
+    question: 'What Games Can I Play?',
+    answer:
+      'You can explore casino-style titles, lottery options, Rummy, Teen Patti, and other featured games depending on what is currently active on the platform.',
+  },
+  {
+    id: 'fallback-4',
+    question: 'Is Stars777 Safe And Secure?',
+    answer:
+      'The platform is designed around protected payment channels, verified withdrawal flows, and secure account handling so players can use the service with more confidence.',
+  },
+  {
+    id: 'fallback-5',
+    question: 'How Fast Are Payouts?',
+    answer:
+      'Verified withdrawals are processed through supported payment methods as quickly as possible. Final timing depends on account status, traffic, and the selected channel.',
+  },
+]
+
+const defaultHomepageFaqSection = {
+  title: 'All About Rummy Game',
+  imageUrl: '/rummy777.webp',
+  items: [
+    {
+      id: 'fallback-1',
+      question: 'How Do I Claim My Welcome Bonus?',
+      answer:
+        'Create your Stars777 account, complete the basic verification steps, and check the active offer shown in your account area. Bonus availability can vary by campaign and eligibility.',
+    },
+    {
+      id: 'fallback-2',
+      question: 'What Makes Stars777 Different?',
+      answer:
+        'Stars777 focuses on fast withdrawals, a wide mix of popular games, and a player-first experience built around reliability, transparency, and responsive support.',
+    },
+    {
+      id: 'fallback-3',
+      question: 'What Games Can I Play?',
+      answer:
+        'You can explore casino-style titles, lottery options, Rummy, Teen Patti, and other featured games depending on what is currently active on the platform.',
+    },
+    {
+      id: 'fallback-4',
+      question: 'Is Stars777 Safe And Secure?',
+      answer:
+        'The platform is designed around protected payment channels, verified withdrawal flows, and secure account handling so players can use the service with more confidence.',
+    },
+    {
+      id: 'fallback-5',
+      question: 'How Fast Are Payouts?',
+      answer:
+        'Verified withdrawals are processed through supported payment methods as quickly as possible. Final timing depends on account status, traffic, and the selected channel.',
+    },
+  ],
+}
+
+function normalizeHomepageFaqSection(value) {
+  const items = Array.isArray(value?.items)
+    ? value.items
+        .map((item, index) => ({
+          id: String(item?.id || `homepage-faq-${index + 1}`),
+          question: String(item?.question || '').trim(),
+          answer: String(item?.answer || '').trim(),
+        }))
+        .filter((item) => item.question && item.answer)
+    : []
+
+  return {
+    ...defaultHomepageFaqSection,
+    ...(value || {}),
+    items: items.length > 0 ? items : defaultHomepageFaqSection.items,
+  }
 }
 
 export default FrontendPage

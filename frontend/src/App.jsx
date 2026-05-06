@@ -10,11 +10,13 @@ import ContactPage from './pages/ContactPage'
 import FaqPage from './pages/FaqPage'
 import TermsOfServicePage from './pages/TermsOfServicePage'
 import SeoManager from './components/SeoManager'
+import PopupCampaign from './components/PopupCampaign'
 
 function App() {
   return (
     <>
       <SeoManager />
+      <PopupCampaign />
       <Routes>
         <Route path="/" element={<FrontendPage />} />
         <Route path="/games" element={<GamesPage />} />

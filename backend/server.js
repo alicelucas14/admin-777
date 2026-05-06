@@ -18,6 +18,7 @@ const frontendIndexPath = path.join(frontendDistPath, 'index.html');
 const dataDirPath = path.resolve(process.env.DATA_DIR || path.join(__dirname, 'data'));
 const uploadsDirPath = path.resolve(process.env.UPLOADS_DIR || path.join(__dirname, 'uploads'));
 const blogImagesDirPath = path.join(uploadsDirPath, 'blog-images');
+const siteAssetsDirPath = path.join(uploadsDirPath, 'site-assets');
 const siteSettingsFilePath = path.join(dataDirPath, 'site-settings.json');
 const contactSubmissionsFilePath = path.join(dataDirPath, 'contact-submissions.json');
 const adminLoginsFilePath = path.join(dataDirPath, 'admin-logins.json');
@@ -119,8 +120,89 @@ function buildDefaultJackpotSection() {
   };
 }
 
+function buildDefaultHomepageFaqSection() {
+  return {
+    title: 'All About Rummy Game',
+    imageUrl: '/rummy777.webp',
+    items: [
+      {
+        id: 'fallback-1',
+        question: 'How Do I Claim My Welcome Bonus?',
+        answer:
+          'Create your Stars777 account, complete the basic verification steps, and check the active offer shown in your account area. Bonus availability can vary by campaign and eligibility.',
+      },
+      {
+        id: 'fallback-2',
+        question: 'What Makes Stars777 Different?',
+        answer:
+          'Stars777 focuses on fast withdrawals, a wide mix of popular games, and a player-first experience built around reliability, transparency, and responsive support.',
+      },
+      {
+        id: 'fallback-3',
+        question: 'What Games Can I Play?',
+        answer:
+          'You can explore casino-style titles, lottery options, Rummy, Teen Patti, and other featured games depending on what is currently active on the platform.',
+      },
+      {
+        id: 'fallback-4',
+        question: 'Is Stars777 Safe And Secure?',
+        answer:
+          'The platform is designed around protected payment channels, verified withdrawal flows, and secure account handling so players can use the service with more confidence.',
+      },
+      {
+        id: 'fallback-5',
+        question: 'How Fast Are Payouts?',
+        answer:
+          'Verified withdrawals are processed through supported payment methods as quickly as possible. Final timing depends on account status, traffic, and the selected channel.',
+      },
+    ],
+  };
+}
+
+function buildDefaultPopupCampaign() {
+  return {
+    enabled: false,
+    items: [
+      {
+        id: 'popup-slide-1',
+        enabled: true,
+        eyebrow: 'Latest Update',
+        title: 'Stay tuned for Stars777 updates',
+        message:
+          'Use this popup for promotions, service notices, product launches, or any important announcement you want visitors to see first.',
+        imageUrl: '',
+        buttonLabel: 'Learn more',
+        buttonUrl: '',
+      },
+      {
+        id: 'popup-slide-2',
+        enabled: true,
+        eyebrow: 'Featured Offer',
+        title: 'Highlight your newest campaign',
+        message:
+          'Showcase limited-time bonuses, referral pushes, or homepage announcements in a rotating slide.',
+        imageUrl: '',
+        buttonLabel: 'View details',
+        buttonUrl: '',
+      },
+      {
+        id: 'popup-slide-3',
+        enabled: true,
+        eyebrow: 'Service Notice',
+        title: 'Keep players informed',
+        message:
+          'Use the third slide for payment updates, maintenance notices, or any message visitors should not miss.',
+        imageUrl: '',
+        buttonLabel: 'Learn more',
+        buttonUrl: '',
+      },
+    ],
+  };
+}
+
 fs.mkdirSync(dataDirPath, { recursive: true });
 fs.mkdirSync(blogImagesDirPath, { recursive: true });
+fs.mkdirSync(siteAssetsDirPath, { recursive: true });
 
 const blogImageUpload = multer({
   storage: multer.diskStorage({
@@ -310,6 +392,8 @@ const store = {
     supportEmail: 'support@stars777.example',
     termsPage: buildDefaultTermsPage(),
     contactPage: buildDefaultContactPage(),
+    homepageFaqSection: buildDefaultHomepageFaqSection(),
+    popupCampaign: buildDefaultPopupCampaign(),
     jackpotSection: buildDefaultJackpotSection(),
     seo: {
       title: 'Stars777 - Online Gaming, Rummy, Teen Patti and Lottery Games',
@@ -541,6 +625,16 @@ app.get('/api/admin/navigation', (_req, res) => {
           id: 'jackpot',
           label: 'Jackpot',
           path: '/admin/jackpot',
+        },
+        {
+          id: 'popups',
+          label: 'Popups',
+          path: '/admin/popups',
+        },
+        {
+          id: 'rummy-section',
+          label: 'Rummy Section',
+          path: '/admin/rummy-section',
         },
         {
           id: 'contact-page',
@@ -1254,6 +1348,8 @@ function sanitizeSiteSettingsPayload(payload) {
     supportEmail: String(payload.supportEmail || '').trim() || store.siteSettings.supportEmail,
     termsPage: sanitizeTermsPageSettings(payload.termsPage || {}),
     contactPage: sanitizeContactPageSettings(payload.contactPage || {}),
+    homepageFaqSection: sanitizeHomepageFaqSectionSettings(payload.homepageFaqSection || {}),
+    popupCampaign: sanitizePopupCampaignSettings(payload.popupCampaign || {}),
     jackpotSection: sanitizeJackpotSectionSettings(payload.jackpotSection || {}),
     seo: sanitizeSeoPayload(payload.seo || {}),
     socialLinks: normalizeSocialLinks(payload.socialLinks),
@@ -1286,7 +1382,7 @@ function loadSiteSettings() {
     }
 
     const savedSettings = JSON.parse(fs.readFileSync(siteSettingsFilePath, 'utf8'));
-    store.siteSettings = {
+    const nextSiteSettings = {
       ...store.siteSettings,
       ...savedSettings,
       termsPage: sanitizeTermsPageSettings(savedSettings.termsPage || {}),
@@ -1295,11 +1391,22 @@ function loadSiteSettings() {
         savedSettings.contactPage || {},
         savedSettings.liveChatLink || '',
       ),
+      homepageFaqSection: sanitizeHomepageFaqSectionSettings(
+        savedSettings.homepageFaqSection || {},
+      ),
+      popupCampaign: sanitizePopupCampaignSettings(savedSettings.popupCampaign || {}),
       jackpotSection: sanitizeJackpotSectionSettings(savedSettings.jackpotSection || {}),
       socialLinks: normalizeSocialLinks(savedSettings.socialLinks),
       withdrawalPartners: normalizeWithdrawalPartners(savedSettings.withdrawalPartners),
     };
+    const migrationResult = migrateEmbeddedSiteAssets(nextSiteSettings);
+
+    store.siteSettings = migrationResult.value;
     delete store.siteSettings.liveChatLink;
+
+    if (migrationResult.changed) {
+      saveSiteSettings();
+    }
   } catch (error) {
     console.warn(`Unable to load site settings: ${error.message}`);
   }
@@ -1308,9 +1415,88 @@ function loadSiteSettings() {
 function saveSiteSettings() {
   try {
     fs.mkdirSync(dataDirPath, { recursive: true });
+    const migrationResult = migrateEmbeddedSiteAssets(store.siteSettings);
+    store.siteSettings = migrationResult.value;
     fs.writeFileSync(siteSettingsFilePath, JSON.stringify(store.siteSettings, null, 2));
   } catch (error) {
     console.warn(`Unable to save site settings: ${error.message}`);
+  }
+}
+
+function migrateEmbeddedSiteAssets(value, pathSegments = ['site-settings']) {
+  if (typeof value === 'string') {
+    const trimmedValue = value.trim();
+
+    if (!trimmedValue.startsWith('data:image/')) {
+      return { value, changed: false };
+    }
+
+    const assetUrl = writeEmbeddedImageAsset(trimmedValue, pathSegments);
+    return {
+      value: assetUrl || value,
+      changed: Boolean(assetUrl && assetUrl !== value),
+    };
+  }
+
+  if (Array.isArray(value)) {
+    let changed = false;
+    const nextValue = value.map((entry, index) => {
+      const result = migrateEmbeddedSiteAssets(entry, [...pathSegments, String(index + 1)]);
+      changed = changed || result.changed;
+      return result.value;
+    });
+
+    return { value: nextValue, changed };
+  }
+
+  if (value && typeof value === 'object') {
+    let changed = false;
+    const nextValue = Object.fromEntries(
+      Object.entries(value).map(([key, entry]) => {
+        const result = migrateEmbeddedSiteAssets(entry, [...pathSegments, key]);
+        changed = changed || result.changed;
+        return [key, result.value];
+      }),
+    );
+
+    return { value: nextValue, changed };
+  }
+
+  return { value, changed: false };
+}
+
+function writeEmbeddedImageAsset(dataUrl, pathSegments) {
+  const matches = /^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/s.exec(dataUrl);
+
+  if (!matches) {
+    return '';
+  }
+
+  const [, mimeType, encodedPayload] = matches;
+  const extension = supportedImageMimeTypes.get(mimeType);
+
+  if (!extension) {
+    return '';
+  }
+
+  try {
+    const buffer = Buffer.from(encodedPayload, 'base64');
+    const timestamp = Date.now();
+    const randomSuffix = Math.random().toString(36).slice(2, 8);
+    const safeBaseName = pathSegments
+      .map((segment) => String(segment || '').toLowerCase().replace(/[^a-z0-9]+/g, '-'))
+      .join('-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'site-asset';
+    const fileName = `${timestamp}-${randomSuffix}-${safeBaseName}${extension}`;
+    const filePath = path.join(siteAssetsDirPath, fileName);
+
+    fs.writeFileSync(filePath, buffer);
+
+    return `/uploads/site-assets/${fileName}`;
+  } catch (error) {
+    console.warn(`Unable to migrate embedded site asset: ${error.message}`);
+    return '';
   }
 }
 
@@ -1436,6 +1622,141 @@ function sanitizeContactPageSettings(payload, legacyLiveChatLink = '') {
     callbackCardImageUrl: String(payload.callbackCardImageUrl || '').trim() || current.callbackCardImageUrl || '',
     faqVisualImageUrl: String(payload.faqVisualImageUrl || '').trim() || current.faqVisualImageUrl || '',
   };
+}
+
+function sanitizeHomepageFaqSectionSettings(payload) {
+  const current = store.siteSettings?.homepageFaqSection || buildDefaultHomepageFaqSection();
+  const defaults = buildDefaultHomepageFaqSection();
+  const hasItems = Object.prototype.hasOwnProperty.call(payload || {}, 'items');
+
+  return {
+    title: String(payload.title || '').trim() || current.title || defaults.title,
+    imageUrl: String(payload.imageUrl || '').trim() || current.imageUrl || defaults.imageUrl,
+    items: hasItems
+      ? normalizeHomepageFaqItems(payload.items)
+      : normalizeHomepageFaqItems(current.items || defaults.items),
+  };
+}
+
+function sanitizePopupCampaignSettings(payload) {
+  const current = store.siteSettings?.popupCampaign || buildDefaultPopupCampaign();
+  const defaults = buildDefaultPopupCampaign();
+
+  return {
+    enabled:
+      typeof payload.enabled === 'boolean'
+        ? payload.enabled
+        : Boolean(current.enabled ?? defaults.enabled),
+    items: resolvePopupCampaignItems(payload, current, defaults),
+  };
+}
+
+function resolvePopupCampaignItems(payload, current, defaults) {
+  const defaultItems = normalizePopupCampaignItems(defaults.items || [], []);
+  const currentItems = getPopupCampaignItems(current, defaultItems);
+
+  if (Array.isArray(payload?.items)) {
+    return normalizePopupCampaignItems(payload.items, currentItems);
+  }
+
+  if (hasLegacyPopupCampaignFields(payload)) {
+    return normalizePopupCampaignItems([payload], currentItems);
+  }
+
+  return currentItems;
+}
+
+function getPopupCampaignItems(source, fallbackItems) {
+  const fallback = normalizePopupCampaignItems(fallbackItems || [], []);
+
+  if (Array.isArray(source?.items)) {
+    return normalizePopupCampaignItems(source.items, fallback);
+  }
+
+  if (hasLegacyPopupCampaignFields(source)) {
+    return normalizePopupCampaignItems([source], fallback);
+  }
+
+  return fallback;
+}
+
+function hasLegacyPopupCampaignFields(value) {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  return [
+    value.eyebrow,
+    value.title,
+    value.message,
+    value.imageUrl,
+    value.buttonLabel,
+    value.buttonUrl,
+  ].some((entry) => String(entry || '').trim());
+}
+
+function normalizePopupCampaignItems(entries, fallbackItems = []) {
+  const fallback = Array.isArray(fallbackItems) ? fallbackItems : [];
+  const sourceEntries = Array.isArray(entries) ? entries : [];
+  const slideCount = Math.max(sourceEntries.length, fallback.length, 3);
+
+  return Array.from({ length: slideCount }).map((_, index) => {
+    const fallbackItem = fallback[index] || fallback[0] || {};
+    const sourceItem = sourceEntries[index] || {};
+
+    return {
+      id:
+        String(sourceItem?.id || '').trim() ||
+        String(fallbackItem?.id || '').trim() ||
+        `popup-slide-${index + 1}`,
+      enabled:
+        typeof sourceItem?.enabled === 'boolean'
+          ? sourceItem.enabled
+          : typeof fallbackItem?.enabled === 'boolean'
+            ? fallbackItem.enabled
+            : true,
+      eyebrow:
+        String(sourceItem?.eyebrow || '').trim() ||
+        String(fallbackItem?.eyebrow || '').trim(),
+      title:
+        String(sourceItem?.title || '').trim() ||
+        String(fallbackItem?.title || '').trim(),
+      message:
+        String(sourceItem?.message || '').trim() ||
+        String(fallbackItem?.message || '').trim(),
+      imageUrl:
+        String(sourceItem?.imageUrl || '').trim() ||
+        String(fallbackItem?.imageUrl || '').trim(),
+      buttonLabel:
+        String(sourceItem?.buttonLabel || '').trim() ||
+        String(fallbackItem?.buttonLabel || '').trim() ||
+        'Learn more',
+      buttonUrl:
+        String(sourceItem?.buttonUrl || '').trim() ||
+        String(fallbackItem?.buttonUrl || '').trim(),
+    };
+  }).slice(0, 3);
+}
+
+function normalizeHomepageFaqItems(value) {
+  const entries = Array.isArray(value) ? value : [];
+
+  return entries
+    .map((entry, index) => {
+      const question = String(entry?.question || '').trim();
+      const answer = String(entry?.answer || '').trim();
+
+      if (!question || !answer) {
+        return null;
+      }
+
+      return {
+        id: String(entry?.id || toSlug(question) || `homepage-faq-${index + 1}`).trim(),
+        question,
+        answer,
+      };
+    })
+    .filter(Boolean);
 }
 
 function sanitizeJackpotSectionSettings(payload) {

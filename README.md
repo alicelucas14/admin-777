@@ -82,15 +82,11 @@ The backend serves the built frontend automatically when `frontend/dist` exists.
 
 Automatic deploys are supported with GitHub Actions using [.github/workflows/deploy-lightsail.yml](.github/workflows/deploy-lightsail.yml).
 
-Before it can run, add these repository secrets in GitHub:
+Before it can run, add this repository secret in GitHub:
 
-- `LIGHTSAIL_HOST`: your server hostname or IP
-- `LIGHTSAIL_USER`: SSH user, for example `admin`
 - `LIGHTSAIL_SSH_PRIVATE_KEY`: private key that can SSH into the Lightsail instance
-- `LIGHTSAIL_APP_DIR`: app path on the server, for example `/home/admin/apps/stars777`
-- `LIGHTSAIL_ENV_FILE`: env file path, for example `/etc/stars777.env`
 
-The workflow connects to Lightsail and runs [scripts/deploy-production.sh](scripts/deploy-production.sh), which pulls `main`, installs dependencies, rebuilds the frontend, reloads PM2 with [ecosystem.config.cjs](ecosystem.config.cjs), and reloads Nginx.
+The workflow uses the current production Lightsail defaults for host, SSH user, app path, and env file, then runs [scripts/deploy-production.sh](scripts/deploy-production.sh), which pulls `main`, installs dependencies, rebuilds the frontend, reloads PM2 with [ecosystem.config.cjs](ecosystem.config.cjs), and reloads Nginx.
 
 ## Backend API Endpoints
 

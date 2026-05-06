@@ -64,6 +64,34 @@ PowerShell equivalent when needed:
 npm.cmd run build
 ```
 
+## Lightsail Deployment
+
+For a production Lightsail Node.js deployment, use the guide in [docs/lightsail-nodejs.md](docs/lightsail-nodejs.md).
+
+Production deployment commands from the project root:
+
+```bash
+npm run install:all
+npm run build
+pm2 start ecosystem.config.cjs
+```
+
+The backend serves the built frontend automatically when `frontend/dist` exists.
+
+## Auto Deploy
+
+Automatic deploys are supported with GitHub Actions using [.github/workflows/deploy-lightsail.yml](.github/workflows/deploy-lightsail.yml).
+
+Before it can run, add these repository secrets in GitHub:
+
+- `LIGHTSAIL_HOST`: your server hostname or IP
+- `LIGHTSAIL_USER`: SSH user, for example `admin`
+- `LIGHTSAIL_SSH_PRIVATE_KEY`: private key that can SSH into the Lightsail instance
+- `LIGHTSAIL_APP_DIR`: app path on the server, for example `/home/admin/apps/stars777`
+- `LIGHTSAIL_ENV_FILE`: env file path, for example `/etc/stars777.env`
+
+The workflow connects to Lightsail and runs [scripts/deploy-production.sh](scripts/deploy-production.sh), which pulls `main`, installs dependencies, rebuilds the frontend, reloads PM2 with [ecosystem.config.cjs](ecosystem.config.cjs), and reloads Nginx.
+
 ## Backend API Endpoints
 
 - GET `/api/health`

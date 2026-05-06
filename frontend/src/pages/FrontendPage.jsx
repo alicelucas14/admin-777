@@ -135,16 +135,25 @@ function FrontendPage() {
               </div>
             </div>
 
-            <div className="faq-showcase-visual" aria-hidden="true">
+            <div className="faq-showcase-visual">
               <img
                 src={homepageFaqSection.imageUrl || defaultHomepageFaqSection.imageUrl}
-                alt=""
+                alt={homepageFaqSection.title}
                 className="faq-showcase-image"
                 loading="lazy"
                 decoding="async"
               />
             </div>
           </div>
+
+          {faqItems.length > 0 ? (
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(buildHomepageFaqSchema(homepageFaqSection.title, faqItems)),
+              }}
+            />
+          ) : null}
         </section>
 
         <section id="about-us" className="section-block">
@@ -376,6 +385,22 @@ function normalizeHomepageFaqSection(value) {
     ...defaultHomepageFaqSection,
     ...(value || {}),
     items: items.length > 0 ? items : defaultHomepageFaqSection.items,
+  }
+}
+
+function buildHomepageFaqSchema(title, items) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    name: title,
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
   }
 }
 

@@ -6,9 +6,11 @@
     "dev": "node scripts/dev.mjs",
     "dev:backend": "node scripts/run-npm.mjs run dev --prefix backend",
     "dev:frontend": "node scripts/run-npm.mjs run dev --prefix frontend",
+    "install:all": "node scripts/install-all.mjs",
     "start:backend": "node scripts/run-npm.mjs run start --prefix backend",
     "start:frontend": "node scripts/run-npm.mjs run dev --prefix frontend",
     "build": "node scripts/run-npm.mjs run build --prefix frontend",
+    "deploy:lightsail": "node scripts/install-all.mjs && node scripts/run-npm.mjs run build --prefix frontend",
     "start": "node scripts/run-npm.mjs run start --prefix backend"
   },
   "devDependencies": {

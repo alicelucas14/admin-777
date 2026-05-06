@@ -1,0 +1,37 @@
+name: Deploy To Lightsail
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Start SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.LIGHTSAIL_SSH_PRIVATE_KEY }}
+
+      - name: Trust Lightsail host
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "${{ secrets.LIGHTSAIL_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Run deployment script on Lightsail
+        env:
+          LIGHTSAIL_USER: ${{ secrets.LIGHTSAIL_USER }}
+          LIGHTSAIL_HOST: ${{ secrets.LIGHTSAIL_HOST }}
+          LIGHTSAIL_APP_DIR: ${{ secrets.LIGHTSAIL_APP_DIR }}
+          LIGHTSAIL_ENV_FILE: ${{ secrets.LIGHTSAIL_ENV_FILE }}
+        run: |
+          APP_DIR="${LIGHTSAIL_APP_DIR:-/home/admin/apps/stars777}"
+          ENV_FILE="${LIGHTSAIL_ENV_FILE:-/etc/stars777.env}"
+          ssh "$LIGHTSAIL_USER@$LIGHTSAIL_HOST" \
+            "APP_DIR='$APP_DIR' ENV_FILE='$ENV_FILE' bash '$APP_DIR/scripts/deploy-production.sh'"

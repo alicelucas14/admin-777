@@ -31,7 +31,18 @@ jobs:
 
       - name: Run deployment script on Lightsail
         run: |
-          APP_DIR="$LIGHTSAIL_APP_DIR"
-          ENV_FILE="$LIGHTSAIL_ENV_FILE"
-          ssh "$LIGHTSAIL_USER@$LIGHTSAIL_HOST" \
-            "APP_DIR='$APP_DIR' ENV_FILE='$ENV_FILE' bash '$APP_DIR/scripts/deploy-production.sh'"
+          ssh "$LIGHTSAIL_USER@$LIGHTSAIL_HOST" "bash -lc '
+            set -euo pipefail
+            cd "$LIGHTSAIL_APP_DIR"
+            git fetch origin main
+            git checkout main
+            git pull --ff-only origin main
+            npm run install:all
+            npm run build
+            set -a
+            . "$LIGHTSAIL_ENV_FILE"
+            set +a
+            pm2 startOrReload ecosystem.config.cjs --update-env
+            pm2 save
+            sudo systemctl reload nginx
+          '"

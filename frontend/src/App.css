@@ -1597,6 +1597,7 @@ main {
   }
 
   .faq-showcase-visual {
+    order: -1;
     padding-top: 0;
     width: 100%;
   }
@@ -1798,21 +1799,21 @@ main {
   display: grid;
   grid-template-columns: minmax(320px, 0.95fr) minmax(260px, 0.85fr);
   gap: 1.4rem;
-  align-items: start;
+  align-items: center;
   width: 100%;
+}
+
+.faq-showcase-heading {
+  margin: 0 0 1rem;
+  color: #ff7a12;
+  font-size: clamp(1.2rem, 2vw, 1.65rem);
+  text-align: left;
 }
 
 .faq-showcase-column {
   display: grid;
   align-content: start;
   min-width: 0;
-}
-
-.faq-showcase-column h2 {
-  margin: 0;
-  color: #ff7a12;
-  font-size: clamp(1.2rem, 2vw, 1.65rem);
-  text-align: left;
 }
 
 .faq-showcase-wrap {
@@ -1862,13 +1863,13 @@ main {
   display: grid;
   place-items: center;
   min-width: 0;
-  align-self: start;
-  padding-top: clamp(2.4rem, 5vw, 4.6rem);
+  align-self: center;
+  padding-top: 0;
 }
 
 .faq-showcase-image {
   display: block;
-  width: min(100%, 620px);
+  width: min(100%, 560px);
   max-width: 100%;
   height: auto;
   object-fit: contain;
@@ -1885,15 +1886,17 @@ main {
     padding: 1rem 0.85rem;
   }
 
+  .faq-showcase-heading {
+    text-align: center;
+    margin-bottom: 0.8rem;
+  }
+
   .faq-showcase-layout {
     gap: 0.85rem;
   }
 
-  .faq-showcase-column h2 {
-    text-align: center;
-  }
-
   .faq-showcase-wrap {
+    margin-top: 0;
     gap: 0.8rem;
   }
 

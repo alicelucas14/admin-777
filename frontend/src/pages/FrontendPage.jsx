@@ -106,10 +106,10 @@ function FrontendPage() {
         <JackpotSection />
 
         <section id="faq" className="section-block faq-showcase-section">
+          <h2 className="faq-showcase-heading">{homepageFaqSection.title}</h2>
+
           <div className="faq-showcase-layout">
             <div className="faq-showcase-column">
-              <h2>{homepageFaqSection.title}</h2>
-
               <div className="faq-wrap faq-showcase-wrap">
                 {faqItems.map((item) => {
                   const isOpen = openFaqId === item.id

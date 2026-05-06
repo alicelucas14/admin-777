@@ -29,7 +29,7 @@ function Footer() {
   const withdrawalPartners = normalizeWithdrawalPartners(siteSettings?.withdrawalPartners)
   const siteName = siteSettings?.siteName || 'Stars777'
   const youtubeLink = socialLinks.find((item) => item.platform.toLowerCase() === 'youtube')
-  const liveChatLink = String(siteSettings?.liveChatLink || '').trim()
+  const liveChatLink = String(siteSettings?.contactPage?.liveChatLink || '').trim()
   const liveChatHref = liveChatLink.startsWith('http') ? liveChatLink : ''
 
   return (

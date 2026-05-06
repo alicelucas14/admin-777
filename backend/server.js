@@ -71,6 +71,7 @@ function buildDefaultContactPage() {
       'Are you interested in our latest news or working on a grammarly story and need to get in touch?',
     salesCopy:
       'Are you interested in our latest news or working on a grammarly story and need to get in touch?',
+    liveChatLink: 'https://wa.me/',
     liveChatImageUrl: '',
     emailCardImageUrl: '',
     callbackCardImageUrl: '',
@@ -307,7 +308,6 @@ const store = {
     defaultLanguage: 'en-US',
     maintenanceMode: false,
     supportEmail: 'support@stars777.example',
-    liveChatLink: 'https://wa.me/',
     termsPage: buildDefaultTermsPage(),
     contactPage: buildDefaultContactPage(),
     jackpotSection: buildDefaultJackpotSection(),
@@ -1252,7 +1252,6 @@ function sanitizeSiteSettingsPayload(payload) {
       String(payload.defaultLanguage || '').trim() || store.siteSettings.defaultLanguage,
     maintenanceMode: Boolean(payload.maintenanceMode),
     supportEmail: String(payload.supportEmail || '').trim() || store.siteSettings.supportEmail,
-    liveChatLink: String(payload.liveChatLink || '').trim(),
     termsPage: sanitizeTermsPageSettings(payload.termsPage || {}),
     contactPage: sanitizeContactPageSettings(payload.contactPage || {}),
     jackpotSection: sanitizeJackpotSectionSettings(payload.jackpotSection || {}),
@@ -1292,11 +1291,15 @@ function loadSiteSettings() {
       ...savedSettings,
       termsPage: sanitizeTermsPageSettings(savedSettings.termsPage || {}),
       seo: sanitizeSeoPayload(savedSettings.seo || store.siteSettings.seo || {}),
-      contactPage: sanitizeContactPageSettings(savedSettings.contactPage || {}),
+      contactPage: sanitizeContactPageSettings(
+        savedSettings.contactPage || {},
+        savedSettings.liveChatLink || '',
+      ),
       jackpotSection: sanitizeJackpotSectionSettings(savedSettings.jackpotSection || {}),
       socialLinks: normalizeSocialLinks(savedSettings.socialLinks),
       withdrawalPartners: normalizeWithdrawalPartners(savedSettings.withdrawalPartners),
     };
+    delete store.siteSettings.liveChatLink;
   } catch (error) {
     console.warn(`Unable to load site settings: ${error.message}`);
   }
@@ -1409,8 +1412,13 @@ function sanitizeSeoPayload(payload) {
   };
 }
 
-function sanitizeContactPageSettings(payload) {
+function sanitizeContactPageSettings(payload, legacyLiveChatLink = '') {
   const current = store.siteSettings?.contactPage || buildDefaultContactPage();
+  const fallbackLiveChatLink =
+    String(payload.liveChatLink || '').trim() ||
+    current.liveChatLink ||
+    String(legacyLiveChatLink || '').trim() ||
+    buildDefaultContactPage().liveChatLink;
 
   return {
     title: String(payload.title || '').trim() || current.title || 'Contact Us',
@@ -1422,6 +1430,7 @@ function sanitizeContactPageSettings(payload) {
     pressCopy: String(payload.pressCopy || '').trim() || current.pressCopy || '',
     supportCopy: String(payload.supportCopy || '').trim() || current.supportCopy || '',
     salesCopy: String(payload.salesCopy || '').trim() || current.salesCopy || '',
+    liveChatLink: fallbackLiveChatLink,
     liveChatImageUrl: String(payload.liveChatImageUrl || '').trim() || current.liveChatImageUrl || '',
     emailCardImageUrl: String(payload.emailCardImageUrl || '').trim() || current.emailCardImageUrl || '',
     callbackCardImageUrl: String(payload.callbackCardImageUrl || '').trim() || current.callbackCardImageUrl || '',

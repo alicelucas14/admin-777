@@ -40,6 +40,7 @@ function ContactSettingsSection({ siteSettings, onUpdateSettings }) {
       contactPage: {
         title: String(formData.get('contactTitle') || ''),
         intro: String(formData.get('contactIntro') || ''),
+        liveChatLink: String(formData.get('contactLiveChatLink') || ''),
         supportCopy: String(formData.get('contactSupportCopy') || ''),
         emailText: String(formData.get('contactEmailText') || ''),
         salesCopy: String(formData.get('contactSalesCopy') || ''),
@@ -91,6 +92,15 @@ function ContactSettingsSection({ siteSettings, onUpdateSettings }) {
               name="contactSupportCopy"
               rows={3}
               defaultValue={siteSettings?.contactPage?.supportCopy || ''}
+            />
+          </label>
+          <label>
+            <span>Live Chat Link or Embed Code</span>
+            <textarea
+              name="contactLiveChatLink"
+              rows={4}
+              placeholder="Paste your LiveChat script or a normal live chat URL"
+              defaultValue={siteSettings?.contactPage?.liveChatLink || ''}
             />
           </label>
           <label>

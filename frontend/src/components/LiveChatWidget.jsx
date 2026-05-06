@@ -25,7 +25,7 @@ function LiveChatWidget() {
   }, [publicApiBase])
 
   useEffect(() => {
-    const license = getLiveChatLicense(siteSettings?.liveChatLink)
+    const license = getLiveChatLicense(siteSettings?.contactPage?.liveChatLink)
     if (!license || typeof window === 'undefined') {
       return undefined
     }

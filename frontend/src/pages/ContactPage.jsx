@@ -93,7 +93,7 @@ function ContactPage() {
     siteSettings.supportEmail ||
     defaultSiteSettings.supportEmail
   const liveChatHref =
-    resolveLiveChatHref(siteSettings.liveChatLink) ||
+    resolveLiveChatHref(contactPage.liveChatLink) ||
     (supportEmail ? `mailto:${supportEmail}` : '#contact')
   const callHref =
     resolvePhoneHref(contactPage.phoneText) ||
@@ -257,6 +257,7 @@ const defaultContactPage = {
     'Are you interested in our latest news or working on a grammarly story and need to get in touch?',
   salesCopy:
     'Are you interested in our latest news or working on a grammarly story and need to get in touch?',
+  liveChatLink: 'https://wa.me/',
   liveChatImageUrl: '',
   emailCardImageUrl: '',
   callbackCardImageUrl: '',
@@ -265,7 +266,6 @@ const defaultContactPage = {
 
 const defaultSiteSettings = {
   supportEmail: 'support@stars777.example',
-  liveChatLink: 'https://wa.me/',
   contactPage: defaultContactPage,
 }
 

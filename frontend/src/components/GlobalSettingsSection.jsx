@@ -25,7 +25,6 @@ function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
       defaultLanguage: String(formData.get('defaultLanguage') || ''),
       maintenanceMode: formData.get('maintenanceMode') === 'on',
       supportEmail: String(formData.get('supportEmail') || ''),
-      liveChatLink: String(formData.get('liveChatLink') || ''),
       socialLinks: socialRows
         .map((row) => ({
           id: row.id,
@@ -150,15 +149,6 @@ function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
           <label>
             <span>Support Email</span>
             <input name="supportEmail" type="email" defaultValue={siteSettings?.supportEmail || ''} />
-          </label>
-          <label>
-            <span>Live Chat Link or Embed Code</span>
-            <textarea
-              name="liveChatLink"
-              rows={4}
-              placeholder="Paste your LiveChat script or a normal live chat URL"
-              defaultValue={siteSettings?.liveChatLink || ''}
-            />
           </label>
           <label className="settings-checkbox-label">
             <input

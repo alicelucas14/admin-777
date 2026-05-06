@@ -42,7 +42,13 @@ function JackpotSection() {
     <section id="jackpot" className="section-block jackpot-section">
       <div className="jackpot-panel">
         <div className="jackpot-heading">
-          <h2>{jackpotSection.title}</h2>
+          <img
+            src="/JACKPOT.webp"
+            alt={jackpotSection.title}
+            className="jackpot-heading__image"
+            loading="eager"
+            decoding="async"
+          />
         </div>
 
         <p className="jackpot-pool-label">{jackpotSection.prizePoolLabel}</p>
@@ -155,7 +161,7 @@ function normalizeAmount(value, fallback = 0) {
 }
 
 function formatInr(value) {
-  return `\u20B9${inrFormatter.format(Number(value) || 0)}`
+  return `₹${inrFormatter.format(Number(value) || 0)}`
 }
 
 const inrFormatter = new Intl.NumberFormat('en-IN', {

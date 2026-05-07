@@ -1591,22 +1591,6 @@ main {
 }
 
 @media (max-width: 860px) {
-  .faq-showcase-layout {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .faq-showcase-visual {
-    order: -1;
-    padding-top: 0;
-    width: 100%;
-  }
-
-  .faq-showcase-image {
-    width: min(100%, 420px);
-    margin-inline: auto;
-  }
-
   .popup-campaign-layout {
     grid-template-columns: 1fr;
   }
@@ -1879,6 +1863,23 @@ main {
 .faq-showcase-actions {
   margin-top: 1rem;
   justify-content: flex-start;
+}
+
+@media (max-width: 860px) {
+  .faq-showcase-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .faq-showcase-visual {
+    order: -1;
+    width: 100%;
+  }
+
+  .faq-showcase-image {
+    width: min(100%, 420px);
+    margin-inline: auto;
+  }
 }
 
 @media (max-width: 640px) {

@@ -189,9 +189,9 @@ function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
                 <label>
                   <span>Icon Image URL</span>
                   <input
-                    type="url"
+                    type="text"
                     value={row.iconUrl}
-                    placeholder="https://cdn.simpleicons.org/facebook/white"
+                    placeholder="https://cdn.simpleicons.org/facebook/white or /uploads/..."
                     onChange={(event) => updateSocialRow(row.id, 'iconUrl', event.target.value)}
                   />
                 </label>
@@ -240,9 +240,9 @@ function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
                 <label>
                   <span>Image URL</span>
                   <input
-                    type="url"
+                    type="text"
                     value={row.imageUrl}
-                    placeholder="https://example.com/paytm.webp"
+                    placeholder="https://example.com/paytm.webp or /uploads/..."
                     onChange={(event) => updatePartnerRow(row.id, 'imageUrl', event.target.value)}
                   />
                 </label>

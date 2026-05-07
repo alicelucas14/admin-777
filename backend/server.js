@@ -463,6 +463,23 @@ app.use('/uploads', express.static(uploadsDirPath, {
 
 app.use(trackPublicTraffic);
 
+app.get('/robots.txt', (req, res) => {
+  const baseUrl = getPublicBaseUrl(req);
+
+  res.type('text/plain').send([
+    'User-agent: *',
+    'Disallow: /admin',
+    'Disallow: /admin/',
+    'Allow: /',
+    '',
+    `Sitemap: ${baseUrl}/sitemap.xml`,
+  ].join('\n'));
+});
+
+app.get('/sitemap.xml', (req, res) => {
+  res.type('application/xml').send(buildSitemapXml(req));
+});
+
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', service: 'website-backend' });
 });
@@ -1290,6 +1307,111 @@ function normalizeStatus(value) {
   }
 
   return 'Archived';
+}
+
+function getRequestProtocol(req) {
+  const forwardedProtocol = String(req.headers['x-forwarded-proto'] || '')
+    .split(',')[0]
+    .trim();
+
+  return forwardedProtocol || req.protocol || 'https';
+}
+
+function getPublicBaseUrl(req) {
+  const protocol = getRequestProtocol(req);
+  const host = String(req.get('host') || 'stars777.org').trim();
+
+  return `${protocol}://${host}`.replace(/\/$/, '');
+}
+
+function toAbsolutePublicUrl(baseUrl, pathname) {
+  return pathname === '/' ? `${baseUrl}/` : `${baseUrl}${pathname}`;
+}
+
+function escapeXml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function resolveLastModified(value) {
+  const normalized = String(value || '').trim();
+
+  if (!normalized) {
+    return '';
+  }
+
+  const parsedDate = new Date(normalized);
+  if (Number.isNaN(parsedDate.getTime())) {
+    return '';
+  }
+
+  return parsedDate.toISOString();
+}
+
+function buildSitemapEntry(baseUrl, pathname, options = {}) {
+  const lines = [
+    '  <url>',
+    `    <loc>${escapeXml(toAbsolutePublicUrl(baseUrl, pathname))}</loc>`,
+  ];
+
+  if (options.lastModified) {
+    lines.push(`    <lastmod>${escapeXml(options.lastModified)}</lastmod>`);
+  }
+
+  if (options.changeFrequency) {
+    lines.push(`    <changefreq>${escapeXml(options.changeFrequency)}</changefreq>`);
+  }
+
+  if (options.priority) {
+    lines.push(`    <priority>${escapeXml(options.priority)}</priority>`);
+  }
+
+  lines.push('  </url>');
+
+  return lines.join('\n');
+}
+
+function buildSitemapXml(req) {
+  const baseUrl = getPublicBaseUrl(req);
+  const staticRoutes = [
+    { pathname: '/', changeFrequency: 'weekly', priority: '1.0' },
+    { pathname: '/games', changeFrequency: 'weekly', priority: '0.8' },
+    { pathname: '/blog', changeFrequency: 'weekly', priority: '0.7' },
+    { pathname: '/contact', changeFrequency: 'monthly', priority: '0.7' },
+    { pathname: '/faq', changeFrequency: 'monthly', priority: '0.6' },
+    { pathname: '/terms-of-service', changeFrequency: 'yearly', priority: '0.4' },
+  ];
+  const gameRoutes = store.games
+    .filter((game) => normalizeStatus(game.status) === 'Published' && String(game.slug || '').trim())
+    .map((game) => ({
+      pathname: `/games/${String(game.slug || '').trim()}`,
+      lastModified: resolveLastModified(game.updatedAt),
+      changeFrequency: 'weekly',
+      priority: '0.7',
+    }));
+  const blogRoutes = store.blogPosts
+    .filter((post) => normalizeStatus(post.status) === 'Published' && String(post.slug || '').trim())
+    .map((post) => ({
+      pathname: `/blog/${String(post.slug || '').trim()}`,
+      lastModified: resolveLastModified(post.updatedAt || post.publishedAt),
+      changeFrequency: 'monthly',
+      priority: '0.6',
+    }));
+
+  const entries = [...staticRoutes, ...gameRoutes, ...blogRoutes]
+    .map((entry) => buildSitemapEntry(baseUrl, entry.pathname, entry))
+    .join('\n');
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    entries,
+    '</urlset>',
+  ].join('\n');
 }
 
 function sanitizeGamePayload(payload) {

@@ -553,15 +553,6 @@ main {
   display: block;
   object-fit: cover;
   object-position: center center;
-  transform: scale(1.035);
-  animation: heroMediaDrift 18s ease-in-out infinite alternate;
-}
-
-.hero-motion-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
 }
 
 .hero-banner::before {
@@ -829,23 +820,6 @@ main {
   }
 }
 
-@keyframes heroMediaDrift {
-  0% {
-    transform: scale(1.035) translate3d(0, 0, 0);
-    filter: saturate(1) brightness(0.98);
-  }
-
-  50% {
-    transform: scale(1.065) translate3d(-1.2%, 0.6%, 0);
-    filter: saturate(1.06) brightness(1.02);
-  }
-
-  100% {
-    transform: scale(1.05) translate3d(1.4%, -0.8%, 0);
-    filter: saturate(1.02) brightness(1);
-  }
-}
-
 @keyframes heroFly {
   0% {
     transform: translate(0, 0) rotate(-12deg) scale(.78);
@@ -972,7 +946,6 @@ main {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-media-image,
   .hero-curve path,
   .hero-plane-wrap,
   .hero-trail,

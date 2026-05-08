@@ -1,10 +1,12 @@
 function HeroSection({ loading, error }) {
+  const heroImageUrl = '/hero1.webp?v=20260508-1303'
+
   return (
     <section id="how-to-play" className="hero-banner">
       <picture className="hero-media" aria-hidden="true">
-        <source srcSet="/hero1.webp" type="image/webp" sizes="100vw" />
+        <source srcSet={heroImageUrl} type="image/webp" sizes="100vw" />
         <img
-          src="/hero1.webp"
+          src={heroImageUrl}
           alt=""
           className="hero-media-image"
           loading="eager"

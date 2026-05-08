@@ -1,6 +1,17 @@
 function HeroSection({ loading, error }) {
   return (
     <section id="how-to-play" className="hero-banner">
+      <picture className="hero-media" aria-hidden="true">
+        <source srcSet="/hero1.webp" type="image/webp" sizes="100vw" />
+        <img
+          src="/hero1.webp"
+          alt=""
+          className="hero-media-image"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+        />
+      </picture>
       <div className="hero-content-box">
         <div className="hero-copy-section">
           <h1 className="hero-title">Stars777</h1>
@@ -35,7 +46,6 @@ function HeroSection({ loading, error }) {
             </a>
           </div>
         </div>
-        <div className="hero-visual-section" aria-hidden="true" />
       </div>
     </section>
   )

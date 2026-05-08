@@ -34,6 +34,7 @@ const supportedImageMimeTypes = new Map([
   ['image/jpeg', '.jpg'],
   ['image/png', '.png'],
   ['image/webp', '.webp'],
+  ['image/avif', '.avif'],
 ]);
 
 function buildDefaultTermsPage() {
@@ -606,7 +607,7 @@ app.post('/api/admin/uploads/blog-images', (req, res) => {
       }
 
       if (error.message === 'unsupported_image_type') {
-        return res.status(400).json({ message: 'Only JPG, PNG, and WEBP images are allowed.' });
+        return res.status(400).json({ message: 'Only JPG, PNG, WEBP, and AVIF images are allowed.' });
       }
 
       return res.status(500).json({ message: 'Could not upload image.' });

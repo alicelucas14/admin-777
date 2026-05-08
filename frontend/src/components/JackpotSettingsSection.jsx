@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { IMAGE_UPLOAD_ACCEPT, SUPPORTED_IMAGE_FORMATS_LABEL, toDataUrl } from '../utils/imageUpload'
 
 function JackpotSettingsSection({ siteSettings, onUpdateSettings }) {
   const [submitError, setSubmitError] = useState('')
@@ -82,7 +83,7 @@ function JackpotSettingsSection({ siteSettings, onUpdateSettings }) {
       updateJackpotRow(id, 'imageUrl', encoded)
       setSubmitError('')
     } catch {
-      setSubmitError('Jackpot image upload failed. Please choose a JPG, PNG, or WEBP image.')
+      setSubmitError(`Jackpot image upload failed. Please choose a ${SUPPORTED_IMAGE_FORMATS_LABEL} image.`)
     }
   }
 
@@ -163,7 +164,7 @@ function JackpotSettingsSection({ siteSettings, onUpdateSettings }) {
                   <span>Upload Image</span>
                   <input
                     type="file"
-                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                    accept={IMAGE_UPLOAD_ACCEPT}
                     onChange={(event) => handleJackpotImageFile(row.id, event.target.files?.[0])}
                   />
                 </label>
@@ -211,21 +212,6 @@ function normalizeJackpotRows(value) {
 function normalizeAmount(value) {
   const parsed = Number(value)
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0
-}
-
-function toDataUrl(file) {
-  const supportedTypes = ['image/jpeg', 'image/png', 'image/webp']
-
-  if (!supportedTypes.includes(file.type)) {
-    return Promise.reject(new Error('unsupported_image_type'))
-  }
-
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(String(reader.result || ''))
-    reader.onerror = () => reject(new Error('file_read_failed'))
-    reader.readAsDataURL(file)
-  })
 }
 
 export default JackpotSettingsSection

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { IMAGE_UPLOAD_ACCEPT, SUPPORTED_IMAGE_FORMATS_LABEL, toDataUrl } from '../utils/imageUpload'
 
 function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
   const [submitError, setSubmitError] = useState('')
@@ -86,7 +87,7 @@ function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
       updateSocialRow(id, 'iconUrl', encoded)
       setSubmitError('')
     } catch {
-      setSubmitError('Social icon upload failed. Please choose a JPG, PNG, or WEBP image.')
+      setSubmitError(`Social icon upload failed. Please choose a ${SUPPORTED_IMAGE_FORMATS_LABEL} image.`)
     }
   }
 
@@ -122,7 +123,7 @@ function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
       updatePartnerRow(id, 'imageUrl', encoded)
       setSubmitError('')
     } catch {
-      setSubmitError('Partner image upload failed. Please choose a JPG, PNG, or WEBP image.')
+      setSubmitError(`Partner image upload failed. Please choose a ${SUPPORTED_IMAGE_FORMATS_LABEL} image.`)
     }
   }
 
@@ -199,7 +200,7 @@ function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
                   <span>Upload Icon</span>
                   <input
                     type="file"
-                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                    accept={IMAGE_UPLOAD_ACCEPT}
                     onChange={(event) => handleSocialIconFile(row.id, event.target.files?.[0])}
                   />
                 </label>
@@ -250,7 +251,7 @@ function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
                   <span>Upload Image</span>
                   <input
                     type="file"
-                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                    accept={IMAGE_UPLOAD_ACCEPT}
                     onChange={(event) => handlePartnerImageFile(row.id, event.target.files?.[0])}
                   />
                 </label>
@@ -273,21 +274,6 @@ function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
       </div>
     </section>
   )
-}
-
-function toDataUrl(file) {
-  const supportedTypes = ['image/jpeg', 'image/png', 'image/webp']
-
-  if (!supportedTypes.includes(file.type)) {
-    return Promise.reject(new Error('unsupported_image_type'))
-  }
-
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(String(reader.result || ''))
-    reader.onerror = () => reject(new Error('file_read_failed'))
-    reader.readAsDataURL(file)
-  })
 }
 
 function normalizeSocialRows(value) {

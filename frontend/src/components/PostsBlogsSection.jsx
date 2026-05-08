@@ -1,7 +1,12 @@
 import { useMemo, useRef, useState } from 'react'
 import { parseBlogContentBlocks, parseInlineMarkdown } from '../utils/blogContent'
+import {
+  IMAGE_UPLOAD_ACCEPT,
+  SUPPORTED_IMAGE_FORMATS_LABEL,
+  SUPPORTED_IMAGE_MIME_TYPES,
+} from '../utils/imageUpload'
 
-const ALLOWED_IMAGE_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
+const ALLOWED_IMAGE_MIME_TYPES = new Set(SUPPORTED_IMAGE_MIME_TYPES)
 const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024
 
 function PostsBlogsSection({
@@ -476,7 +481,7 @@ function PostsBlogsSection({
               />
               <input
                 type="file"
-                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                accept={IMAGE_UPLOAD_ACCEPT}
                 onChange={handleIconImageFile}
                 disabled={isUploadingIconImage || isSaving}
               />
@@ -493,7 +498,7 @@ function PostsBlogsSection({
               />
               <input
                 type="file"
-                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                accept={IMAGE_UPLOAD_ACCEPT}
                 onChange={handleContentImageFile}
                 disabled={isUploadingContentImage || isSaving}
               />
@@ -714,7 +719,7 @@ function normalizeStatus(value) {
 
 function validateUploadFile(file) {
   if (!ALLOWED_IMAGE_MIME_TYPES.has(String(file?.type || '').toLowerCase())) {
-    return 'Only JPG, PNG, and WEBP images are allowed.'
+    return `Only ${SUPPORTED_IMAGE_FORMATS_LABEL} images are allowed.`
   }
 
   if (Number(file?.size || 0) > MAX_UPLOAD_SIZE_BYTES) {

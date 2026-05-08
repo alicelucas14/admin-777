@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { IMAGE_UPLOAD_ACCEPT, SUPPORTED_IMAGE_FORMATS_LABEL, toDataUrl } from '../utils/imageUpload'
 
 function RummySectionSettingsSection({ siteSettings, onUpdateSettings }) {
   const [submitError, setSubmitError] = useState('')
@@ -61,7 +62,7 @@ function RummySectionSettingsSection({ siteSettings, onUpdateSettings }) {
       updateSectionField('imageUrl', encoded)
       setSubmitError('')
     } catch {
-      setSubmitError('Rummy image upload failed. Please choose a JPG, PNG, or WEBP image.')
+      setSubmitError(`Rummy image upload failed. Please choose a ${SUPPORTED_IMAGE_FORMATS_LABEL} image.`)
     }
   }
 
@@ -118,7 +119,7 @@ function RummySectionSettingsSection({ siteSettings, onUpdateSettings }) {
             <span>Upload Section Image</span>
             <input
               type="file"
-              accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+              accept={IMAGE_UPLOAD_ACCEPT}
               onChange={(event) => handleSectionImageFile(event.target.files?.[0])}
             />
           </label>
@@ -192,21 +193,6 @@ function normalizeRummyRows(value) {
     question: String(row.question || ''),
     answer: String(row.answer || ''),
   }))
-}
-
-function toDataUrl(file) {
-  const supportedTypes = ['image/jpeg', 'image/png', 'image/webp']
-
-  if (!supportedTypes.includes(file.type)) {
-    return Promise.reject(new Error('unsupported_image_type'))
-  }
-
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(String(reader.result || ''))
-    reader.onerror = () => reject(new Error('file_read_failed'))
-    reader.readAsDataURL(file)
-  })
 }
 
 export default RummySectionSettingsSection

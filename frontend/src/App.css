@@ -514,6 +514,7 @@ main {
 
 .hero-banner {
   position: relative;
+  isolation: isolate;
   margin-top: 0;
   min-height: 650px;
   padding: 1.9rem 1.15rem 1.55rem;
@@ -521,18 +522,37 @@ main {
   border-bottom: 2px solid rgba(255, 255, 255, 0.35) !important;
   border-radius: 0;
   overflow: hidden;
-  background-image:
-    linear-gradient(90deg, rgba(9, 5, 2, 0.68) 0%, rgba(9, 5, 2, 0.42) 42%, rgba(9, 5, 2, 0.18) 100%),
-    radial-gradient(circle at 18% 16%, rgba(255, 190, 78, 0.18) 0%, rgba(255, 190, 78, 0) 28%),
-    radial-gradient(circle at 78% 24%, rgba(255, 128, 18, 0.14) 0%, rgba(255, 128, 18, 0) 32%),
-    url('/hero1.webp');
-  background-position: center, 0 0, 0 0, center;
-  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
-  background-size: auto, auto, auto, cover;
+  background: linear-gradient(180deg, rgba(7, 4, 2, 0.88) 0%, rgba(7, 4, 2, 0.72) 100%);
   box-shadow: none !important;
   outline: 0 !important;
   animation: enter 320ms ease;
   scroll-margin-top: 84px;
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  overflow: hidden;
+}
+
+.hero-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(90deg, rgba(9, 5, 2, 0.68) 0%, rgba(9, 5, 2, 0.42) 42%, rgba(9, 5, 2, 0.18) 100%),
+    radial-gradient(circle at 18% 16%, rgba(255, 190, 78, 0.18) 0%, rgba(255, 190, 78, 0) 28%),
+    radial-gradient(circle at 78% 24%, rgba(255, 128, 18, 0.14) 0%, rgba(255, 128, 18, 0) 32%);
+}
+
+.hero-media-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center center;
 }
 
 .hero-banner::before {
@@ -556,8 +576,7 @@ main {
 }
 
 .hero-copy-section,
-.hero-actions-section,
-.hero-visual-section {
+.hero-actions-section {
   display: grid;
 }
 
@@ -571,11 +590,6 @@ main {
 .hero-actions-section {
   justify-content: start;
   padding-top: 0.5rem;
-}
-
-.hero-visual-section {
-  align-content: center;
-  justify-items: end;
 }
 
 .hero-banner + .section-block {
@@ -679,19 +693,13 @@ main {
 
 @media (min-width: 901px) {
   .hero-content-box {
-    grid-template-columns: minmax(0, 1fr) minmax(240px, 400px);
+    grid-template-columns: minmax(0, 1fr);
     align-items: center;
-    column-gap: 1.25rem;
   }
 
   .hero-copy-section,
   .hero-actions-section {
     grid-column: 1;
-  }
-
-  .hero-visual-section {
-    grid-column: 2;
-    grid-row: 1 / span 2;
   }
 }
 
@@ -4640,7 +4648,6 @@ main {
   .hero-banner {
     min-height: 0;
     padding: 1.7rem 0.95rem 1.4rem;
-    background-position: center;
   }
 
   .hero-content-box {

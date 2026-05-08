@@ -175,7 +175,7 @@ function FrontendPage() {
             </div>
 
             <div className="about-us-visual" aria-hidden="true">
-              <img src="/about_side.png" alt="" className="about-us-image" loading="lazy" decoding="async" />
+              <img src="/about_side.webp" alt="" className="about-us-image" loading="lazy" decoding="async" />
             </div>
           </div>
         </section>

@@ -1,7 +1,7 @@
 const BLOG_IMAGE_BLOCK_PATTERN = /^!\[(.*?)\]\((.+)\)$/
 const BLOG_HEADING_BLOCK_PATTERN = /^(#{1,3})\s+(.+)$/
 const BLOG_CENTER_BLOCK_PATTERN = /^\[center\]([\s\S]+)\[\/center\]$/i
-const PLAIN_IMAGE_URL_PATTERN = /^(https?:\/\/\S+\.(?:png|jpe?g|webp|gif|svg)(?:\?\S*)?|data:image\/[^;]+;base64,[A-Za-z0-9+/=]+)$/i
+const PLAIN_IMAGE_URL_PATTERN = /^(https?:\/\/\S+\.(?:png|jpe?g|webp|avif|gif|svg)(?:\?\S*)?|data:image\/[^;]+;base64,[A-Za-z0-9+/=]+)$/i
 const INLINE_MARKDOWN_PATTERN = /(\*\*([^*]+)\*\*|\[([^\]]+)\]\(([^)]+)\))/g
 
 export function parseBlogContentBlocks(content, fallbackBlocks = []) {

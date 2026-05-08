@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { IMAGE_UPLOAD_ACCEPT, SUPPORTED_IMAGE_FORMATS_LABEL, toDataUrl } from '../utils/imageUpload'
 
 function ContactSettingsSection({ siteSettings, onUpdateSettings }) {
   const [submitError, setSubmitError] = useState('')
@@ -26,7 +27,7 @@ function ContactSettingsSection({ siteSettings, onUpdateSettings }) {
       updateContactImageField(field, encoded)
       setSubmitError('')
     } catch {
-      setSubmitError('Contact image upload failed. Please choose a JPG, PNG, or WEBP image.')
+      setSubmitError(`Contact image upload failed. Please choose a ${SUPPORTED_IMAGE_FORMATS_LABEL} image.`)
     }
   }
 
@@ -145,7 +146,7 @@ function ContactSettingsSection({ siteSettings, onUpdateSettings }) {
                   <span>Upload Image</span>
                   <input
                     type="file"
-                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                    accept={IMAGE_UPLOAD_ACCEPT}
                     onChange={(event) => handleContactImageFile(field, event.target.files?.[0])}
                   />
                 </label>
@@ -165,21 +166,6 @@ function ContactSettingsSection({ siteSettings, onUpdateSettings }) {
       </div>
     </section>
   )
-}
-
-function toDataUrl(file) {
-  const supportedTypes = ['image/jpeg', 'image/png', 'image/webp']
-
-  if (!supportedTypes.includes(file.type)) {
-    return Promise.reject(new Error('unsupported_image_type'))
-  }
-
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(String(reader.result || ''))
-    reader.onerror = () => reject(new Error('file_read_failed'))
-    reader.readAsDataURL(file)
-  })
 }
 
 function normalizeContactImageFields(value) {

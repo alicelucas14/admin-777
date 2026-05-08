@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { IMAGE_UPLOAD_ACCEPT, toDataUrl } from '../utils/imageUpload'
 
 function ReviewsSection({ reviews, onCreateReview, onUpdateReview, onDeleteReview, onBulkAction }) {
   const [query, setQuery] = useState('')
@@ -215,7 +216,7 @@ function ReviewsSection({ reviews, onCreateReview, onUpdateReview, onDeleteRevie
             />
             <input
               type="file"
-              accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+              accept={IMAGE_UPLOAD_ACCEPT}
               onChange={handleImageFile}
             />
             <select
@@ -355,15 +356,6 @@ function ReviewsSection({ reviews, onCreateReview, onUpdateReview, onDeleteRevie
       </div>
     </section>
   )
-}
-
-function toDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(String(reader.result || ''))
-    reader.onerror = () => reject(new Error('file_read_failed'))
-    reader.readAsDataURL(file)
-  })
 }
 
 function initials(value) {

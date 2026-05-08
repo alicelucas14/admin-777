@@ -12,6 +12,16 @@ function HeroSection({ loading, error }) {
           fetchPriority="high"
         />
       </picture>
+      <div className="hero-motion-layer" aria-hidden="true">
+        <div className="hero-trail" />
+        <div className="hero-chip hero-chip--one" />
+        <div className="hero-chip hero-chip--two" />
+        <div className="hero-chip hero-chip--three" />
+        <div className="hero-spark hero-spark--1" />
+        <div className="hero-spark hero-spark--2" />
+        <div className="hero-spark hero-spark--3" />
+        <div className="hero-spark hero-spark--4" />
+      </div>
       <div className="hero-content-box">
         <div className="hero-copy-section">
           <h1 className="hero-title">Stars777</h1>

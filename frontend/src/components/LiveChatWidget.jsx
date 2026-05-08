@@ -39,14 +39,59 @@ function LiveChatWidget() {
       return undefined
     }
 
-    const script = document.createElement('script')
-    script.async = true
-    script.type = 'text/javascript'
-    script.src = 'https://cdn.livechatinc.com/tracking.js'
-    script.dataset.starsLivechat = 'true'
-    document.head.appendChild(script)
+    let idleHandle = null
+    let timeoutHandle = null
 
-    return undefined
+    const loadScript = () => {
+      if (document.querySelector('script[data-stars-livechat="true"]')) {
+        return
+      }
+
+      const script = document.createElement('script')
+      script.async = true
+      script.type = 'text/javascript'
+      script.src = 'https://cdn.livechatinc.com/tracking.js'
+      script.dataset.starsLivechat = 'true'
+      document.head.appendChild(script)
+    }
+
+    const loadOnInteraction = () => {
+      detachListeners()
+      if (idleHandle && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleHandle)
+      }
+      if (timeoutHandle) {
+        window.clearTimeout(timeoutHandle)
+      }
+      loadScript()
+    }
+
+    const interactionEvents = ['pointerdown', 'keydown', 'touchstart', 'scroll']
+    const detachListeners = () => {
+      interactionEvents.forEach((eventName) => {
+        window.removeEventListener(eventName, loadOnInteraction)
+      })
+    }
+
+    interactionEvents.forEach((eventName) => {
+      window.addEventListener(eventName, loadOnInteraction, { once: true, passive: true })
+    })
+
+    if ('requestIdleCallback' in window) {
+      idleHandle = window.requestIdleCallback(loadScript, { timeout: 4000 })
+    } else {
+      timeoutHandle = window.setTimeout(loadScript, 4000)
+    }
+
+    return () => {
+      detachListeners()
+      if (idleHandle && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleHandle)
+      }
+      if (timeoutHandle) {
+        window.clearTimeout(timeoutHandle)
+      }
+    }
   }, [siteSettings])
 
   return null

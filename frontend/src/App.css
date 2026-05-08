@@ -525,7 +525,7 @@ main {
     linear-gradient(90deg, rgba(9, 5, 2, 0.68) 0%, rgba(9, 5, 2, 0.42) 42%, rgba(9, 5, 2, 0.18) 100%),
     radial-gradient(circle at 18% 16%, rgba(255, 190, 78, 0.18) 0%, rgba(255, 190, 78, 0) 28%),
     radial-gradient(circle at 78% 24%, rgba(255, 128, 18, 0.14) 0%, rgba(255, 128, 18, 0) 32%),
-    url('/hero1.gif');
+    url('/hero.webp');
   background-position: center, 0 0, 0 0, center;
   background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
   background-size: auto, auto, auto, cover;
@@ -4345,11 +4345,12 @@ main {
 .site-footer {
   color: #ffffff;
   background-image:
-    linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.84)),
-    url('/stars777_footer.webp');
+    radial-gradient(circle at top left, rgba(255, 122, 18, 0.16), transparent 26%),
+    radial-gradient(circle at top right, rgba(255, 77, 77, 0.14), transparent 24%),
+    linear-gradient(180deg, rgba(4, 8, 12, 0.96), rgba(10, 18, 28, 0.98));
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: auto;
   border-top: 0;
 }
 

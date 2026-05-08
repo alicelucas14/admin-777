@@ -1,0 +1,22 @@
+[
+  {
+    "id": 301,
+    "user": "Mia R.",
+    "rating": 5,
+    "comment": "Smooth gameplay and amazing visuals.",
+    "date": "2026-04-19",
+    "updatedAt": "2026-04-19",
+    "status": "Published",
+    "imageUrl": ""
+  },
+  {
+    "id": 302,
+    "user": "Leon K.",
+    "rating": 4,
+    "comment": "Great update, but loading can be faster.",
+    "date": "2026-04-21",
+    "updatedAt": "2026-04-21",
+    "status": "Published",
+    "imageUrl": ""
+  }
+]

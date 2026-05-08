@@ -22,6 +22,7 @@ const siteAssetsDirPath = path.join(uploadsDirPath, 'site-assets');
 const siteSettingsFilePath = path.join(dataDirPath, 'site-settings.json');
 const contactSubmissionsFilePath = path.join(dataDirPath, 'contact-submissions.json');
 const adminLoginsFilePath = path.join(dataDirPath, 'admin-logins.json');
+const reviewsFilePath = path.join(dataDirPath, 'reviews.json');
 const visitorsFilePath = path.join(dataDirPath, 'visitors.json');
 const adminDevOrigin = String(process.env.ADMIN_DEV_ORIGIN || 'http://127.0.0.1:5173').replace(/\/$/, '');
 const adminDevRedirectEnabled = process.env.ADMIN_DEV_REDIRECT !== 'false';
@@ -454,6 +455,7 @@ const store = {
 loadSiteSettings();
 loadContactSubmissions();
 loadAdminLogins();
+loadReviews();
 loadVisitors();
 
 app.use('/uploads', express.static(uploadsDirPath, {
@@ -981,6 +983,7 @@ app.post('/api/admin/reviews', (req, res) => {
   };
 
   store.reviews.unshift(created);
+  saveReviews();
 
   return res.status(201).json(created);
 });
@@ -1015,6 +1018,7 @@ app.put('/api/admin/reviews/:id', (req, res) => {
   };
 
   store.reviews[index] = updated;
+  saveReviews();
   return res.json(updated);
 });
 
@@ -1027,6 +1031,7 @@ app.delete('/api/admin/reviews/:id', (req, res) => {
   }
 
   const [deleted] = store.reviews.splice(index, 1);
+  saveReviews();
   return res.json(deleted);
 });
 
@@ -1044,6 +1049,7 @@ app.post('/api/admin/reviews/bulk', (req, res) => {
     const deleteSet = new Set(ids);
     const before = store.reviews.length;
     store.reviews = store.reviews.filter((review) => !deleteSet.has(Number(review.id)));
+    saveReviews();
     return res.json({ affected: before - store.reviews.length });
   }
 
@@ -1063,6 +1069,8 @@ app.post('/api/admin/reviews/bulk', (req, res) => {
       updatedAt: new Date().toISOString().slice(0, 10),
     };
   });
+
+  saveReviews();
 
   return res.json({ affected });
 });
@@ -2152,6 +2160,21 @@ function loadAdminLogins() {
 
 function saveAdminLogins() {
   writeJsonFile(adminLoginsFilePath, store.adminLogins);
+}
+
+function loadReviews() {
+  const savedReviews = readJsonArray(reviewsFilePath);
+
+  if (savedReviews.length > 0) {
+    store.reviews = savedReviews;
+    return;
+  }
+
+  writeJsonFile(reviewsFilePath, store.reviews);
+}
+
+function saveReviews() {
+  writeJsonFile(reviewsFilePath, store.reviews);
 }
 
 function loadVisitors() {

@@ -25,7 +25,14 @@ function HeroSection({ loading, error }) {
             >
               Play Now
             </a>
-            <span className="hero-live-pill">● 5.00x Live Multiplier</span>
+            <a
+              className="hero-live-pill"
+              href="https://t.me/stars777_prediction"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ● 5.00x Live Multiplier
+            </a>
           </div>
         </div>
         <div className="hero-visual-section" aria-hidden="true" />

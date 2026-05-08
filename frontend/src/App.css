@@ -1297,9 +1297,26 @@ main {
 }
 
 @media (max-width: 760px) {
+  .contact-page-heading {
+    max-width: 100%;
+  }
+
+  .contact-quick-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
   .contact-quick-card {
+    min-height: 0;
     grid-template-columns: 1fr;
     row-gap: 0.9rem;
+  }
+
+  .contact-quick-card h3,
+  .contact-quick-card--live-chat h3,
+  .contact-quick-card--callback h3 {
+    white-space: normal;
+    font-size: clamp(1.45rem, 8vw, 1.9rem);
   }
 
   .contact-quick-card__copy,
@@ -1307,11 +1324,23 @@ main {
     max-width: none;
   }
 
+  .contact-quick-card__action {
+    width: 100%;
+  }
+
   .contact-quick-card__visual {
     width: min(100%, 140px);
     justify-self: start;
     align-self: start;
     padding-top: 0;
+  }
+
+  .contact-faq-layout {
+    gap: 1rem;
+  }
+
+  .contact-faq-title {
+    text-align: center;
   }
 }
 

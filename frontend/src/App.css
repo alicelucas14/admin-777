@@ -1,9 +1,9 @@
  :root {
   --text-primary: #182231;
-  --text-muted: #6d8198;
+  --text-muted: #4f657d;
   --accent-cool: #14e0ff;
-  --admin-text: #182231;
-  --admin-muted: #6d8198;
+  --admin-text: #122033;
+  --admin-muted: #4f657d;
   --admin-border: rgba(125, 147, 176, 0.24);
   --admin-card-bg: #ffffff;
   --admin-soft-bg: #f5f8fc;
@@ -23,8 +23,8 @@
 }
 
 .admin-shell--light {
-  --admin-text: #182231;
-  --admin-muted: #6d8198;
+  --admin-text: #122033;
+  --admin-muted: #4f657d;
   --admin-border: rgba(125, 147, 176, 0.24);
   --admin-card-bg: #ffffff;
   --admin-soft-bg: #f5f8fc;
@@ -37,7 +37,7 @@
 
 .admin-shell--dark {
   --admin-text: #f4f7fb;
-  --admin-muted: #a8b6ca;
+  --admin-muted: #c4cfdd;
   --admin-border: rgba(124, 152, 196, 0.24);
   --admin-card-bg: #132033;
   --admin-soft-bg: #0f1a2a;
@@ -2265,6 +2265,7 @@ main {
   background: var(--admin-soft-bg);
   border-bottom-color: var(--admin-border);
   color: var(--admin-muted);
+  font-weight: 800;
 }
 
 .admin-shell .games-table-row {
@@ -2282,6 +2283,7 @@ main {
 .admin-shell input::placeholder,
 .admin-shell textarea::placeholder {
   color: var(--admin-muted);
+  opacity: 1;
 }
 
 .admin-shell .games-create-button,
@@ -2363,7 +2365,7 @@ main {
 
 .games-manage-header p {
   margin: 0.35rem 0 0;
-  color: #6d8198;
+  color: #4c6178;
 }
 
 .games-create-button {
@@ -2400,7 +2402,7 @@ main {
   border-radius: 0.48rem;
   padding: 0.55rem 0.62rem;
   background: #ffffff;
-  color: #21364d;
+  color: #16293f;
 }
 
 .games-editor-form textarea {
@@ -2409,7 +2411,7 @@ main {
   border-radius: 0.48rem;
   padding: 0.55rem 0.62rem;
   background: #ffffff;
-  color: #21364d;
+  color: #16293f;
   resize: vertical;
 }
 
@@ -2526,7 +2528,7 @@ main {
 
 .games-table-head {
   text-transform: uppercase;
-  color: #7e90a5;
+  color: #51667f;
   font-size: 0.74rem;
   letter-spacing: 0.07em;
   border-bottom: 1px solid #d8e0eb;
@@ -2578,12 +2580,12 @@ main {
 .games-name-col span {
   display: block;
   margin-top: 0.18rem;
-  color: #7e8fa2;
+  color: #55697f;
 }
 
 .games-name-col p {
   margin: 0.22rem 0 0;
-  color: #6c7f96;
+  color: #465b73;
   font-size: 0.84rem;
   line-height: 1.35;
 }
@@ -2616,7 +2618,7 @@ main {
 }
 
 .games-date {
-  color: #70849d;
+  color: #51667f;
 }
 
 .games-row-actions {
@@ -2645,7 +2647,7 @@ main {
 .games-empty-state {
   margin: 0;
   padding: 0.95rem 0.9rem;
-  color: #637892;
+  color: #4d627a;
 }
 
 
@@ -2854,7 +2856,7 @@ main {
 
 .reviews-comment-cell {
   margin: 0;
-  color: #445b73;
+  color: #31465d;
   font-size: 0.9rem;
   line-height: 1.4;
 }

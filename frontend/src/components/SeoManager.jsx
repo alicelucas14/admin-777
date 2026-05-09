@@ -12,6 +12,7 @@ function SeoManager() {
     if (location.pathname.startsWith('/admin')) {
       document.title = 'Admin'
       setMeta('robots', 'noindex,nofollow,noarchive')
+      setMeta('googlebot', 'noindex,nofollow,noarchive,nosnippet')
       return
     }
 

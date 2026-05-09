@@ -466,6 +466,14 @@ app.use('/uploads', express.static(uploadsDirPath, {
 
 app.use(trackPublicTraffic);
 
+app.use((req, res, next) => {
+  if (req.path.startsWith('/admin') || req.path.startsWith('/api/admin')) {
+    res.set('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
+  }
+
+  next();
+});
+
 app.get('/robots.txt', (req, res) => {
   const baseUrl = getPublicBaseUrl(req);
 
@@ -1226,8 +1234,6 @@ app.use((req, res, next) => {
 
 app.get(/^(?!\/api).*/, async (req, res) => {
   if (req.path.startsWith('/admin')) {
-    res.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
-
     const redirectTarget = await getLocalAdminRedirectTarget(req);
     if (redirectTarget) {
       return res.redirect(307, redirectTarget);

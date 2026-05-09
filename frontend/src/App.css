@@ -36,8 +36,8 @@
 }
 
 .admin-shell--dark {
-  --admin-text: #f4f7fb;
-  --admin-muted: #c4cfdd;
+  --admin-text: #ffffff;
+  --admin-muted: #ffffff;
   --admin-border: rgba(124, 152, 196, 0.24);
   --admin-card-bg: #132033;
   --admin-soft-bg: #0f1a2a;
@@ -2306,6 +2306,32 @@ main {
 .admin-shell .messages-table-row p {
   border-top-color: var(--admin-border);
   color: var(--admin-text);
+}
+
+.admin-shell--dark .games-status,
+.admin-shell--dark .games-link-edit,
+.admin-shell--dark .games-link-delete,
+.admin-shell--dark .games-form-error,
+.admin-shell--dark .blog-image-field-group strong,
+.admin-shell--dark .blog-image-field-group p,
+.admin-shell--dark .blog-editor-toolbar-button,
+.admin-shell--dark .blog-editor-toolbar-button:hover,
+.admin-shell--dark .blog-content-preview strong,
+.admin-shell--dark .blog-content-preview-body p,
+.admin-shell--dark .blog-content-preview-heading,
+.admin-shell--dark .blog-content-preview-centered,
+.admin-shell--dark .faqs-answer-cell,
+.admin-shell--dark .reviews-comment-cell,
+.admin-shell--dark .reviews-rating-cell,
+.admin-shell--dark .games-manage-card :is(h1, h2, h3, h4, p, span, small, strong, label, dt, dd, li),
+.admin-shell--dark .dashboard-admin-panel :is(h1, h2, h3, h4, p, span, small, strong, label, dt, dd, li),
+.admin-shell--dark .games-admin-panel :is(h1, h2, h3, h4, p, span, small, strong, label, dt, dd, li) {
+  color: #ffffff;
+}
+
+.admin-shell--dark input::placeholder,
+.admin-shell--dark textarea::placeholder {
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .data-list {

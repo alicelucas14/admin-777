@@ -136,9 +136,9 @@ function ContactSettingsSection({ siteSettings, onUpdateSettings }) {
                 <label>
                   <span>{label}</span>
                   <input
-                    type="url"
+                    type="text"
                     value={contactImageFields[field] || ''}
-                    placeholder="https://example.com/contact-image.webp"
+                    placeholder="https://example.com/contact-image.webp or /uploads/..."
                     onChange={(event) => updateContactImageField(field, event.target.value)}
                   />
                 </label>

@@ -1229,7 +1229,7 @@ app.use((req, res, next) => {
     return next();
   }
 
-  return express.static(frontendDistPath)(req, res, next);
+  return express.static(frontendDistPath, { index: false })(req, res, next);
 });
 
 app.get(/^(?!\/api).*/, async (req, res) => {
@@ -1246,11 +1246,13 @@ app.get(/^(?!\/api).*/, async (req, res) => {
     );
   }
 
-  return res.sendFile(frontendIndexPath, (error) => {
-    if (error && !res.headersSent) {
-      res.status(error.statusCode || 500).send('Could not load the frontend application.');
-    }
-  });
+  try {
+    const html = fs.readFileSync(frontendIndexPath, 'utf8');
+    const seo = buildHtmlSeoPayload(req);
+    return res.type('html').send(applySeoToHtml(html, seo));
+  } catch (error) {
+    return res.status(500).send('Could not load the frontend application.');
+  }
 });
 
 app.listen(PORT, () => {
@@ -1329,7 +1331,16 @@ function getRequestProtocol(req) {
     .split(',')[0]
     .trim();
 
-  return forwardedProtocol || req.protocol || 'https';
+  if (forwardedProtocol) {
+    return forwardedProtocol;
+  }
+
+  const host = String(req.get('host') || '').split(':')[0].trim();
+  if (host && !isLocalHostName(host)) {
+    return 'https';
+  }
+
+  return req.protocol || 'https';
 }
 
 function getPublicBaseUrl(req) {
@@ -1365,6 +1376,281 @@ function resolveLastModified(value) {
   }
 
   return parsedDate.toISOString();
+}
+
+function buildHtmlSeoPayload(req) {
+  const pathname = normalizeSeoPath(req.path || '/');
+  const siteName = store.siteSettings?.siteName || 'Stars777';
+  const seo = store.siteSettings?.seo || {};
+  const canonicalBase = resolveCanonicalBaseUrl(req, seo.canonicalUrl);
+  const canonical = toAbsolutePublicUrl(canonicalBase, pathname);
+  const defaultOgImage = seo.ogImageUrl || `${canonicalBase}/Stars777-Logo.png`;
+  const basePayload = {
+    title: seo.title || `${siteName} - Online Gaming Platform`,
+    description:
+      seo.description ||
+      'Stars777 online gaming platform with games, support, and fast access.',
+    keywords: String(seo.keywords || '').trim(),
+    robots: 'index,follow,max-image-preview:large',
+    canonical,
+    siteName,
+    ogImageUrl: toAbsoluteAssetUrl(canonicalBase, defaultOgImage),
+    ogImageAlt: `${siteName} brand image`,
+  };
+
+  if (pathname === '/') {
+    return {
+      ...basePayload,
+      title: `Online Gaming Platform | ${siteName}`,
+      description:
+        'Explore Stars777 for fair gameplay, fast withdrawals, featured game reviews, blog updates, and trusted support.',
+      keywords: joinSeoKeywords(
+        'Stars777 home, online gaming platform, featured game reviews, fast withdrawals',
+        seo.keywords,
+      ),
+    };
+  }
+
+  if (pathname === '/games') {
+    return {
+      ...basePayload,
+      title: `All Games | ${siteName}`,
+      description: 'Browse all published Stars777 games, genres, and reviews before you play.',
+      keywords: joinSeoKeywords('Stars777 games, online games India, game reviews, casino games', seo.keywords),
+    };
+  }
+
+  if (pathname.startsWith('/games/')) {
+    const slug = pathname.slice('/games/'.length);
+    const game = store.games.find((entry) => (
+      normalizeStatus(entry.status) === 'Published'
+      && String(entry.slug || '').trim().toLowerCase() === slug.toLowerCase()
+    ));
+
+    if (game) {
+      return {
+        ...basePayload,
+        title: `${game.title} Review | ${siteName}`,
+        description: buildExcerpt(game.writeUp || game.description, 160),
+        keywords: joinSeoKeywords(
+          `${game.title}, ${game.genre || 'game'} review, Stars777 ${game.title}`,
+          seo.keywords,
+        ),
+        ogImageUrl: toAbsoluteAssetUrl(canonicalBase, game.imageUrl || defaultOgImage),
+        ogImageAlt: game.title,
+      };
+    }
+  }
+
+  if (pathname === '/blog') {
+    return {
+      ...basePayload,
+      title: `Blog | ${siteName}`,
+      description: 'Read Stars777 blog posts, updates, player guides, and platform news.',
+      keywords: joinSeoKeywords('Stars777 blog, player guides, gaming news, platform updates', seo.keywords),
+    };
+  }
+
+  if (pathname.startsWith('/blog/')) {
+    const slug = pathname.slice('/blog/'.length);
+    const post = store.blogPosts.find((entry) => (
+      normalizeStatus(entry.status) === 'Published'
+      && String(entry.slug || '').trim().toLowerCase() === slug.toLowerCase()
+    ));
+
+    if (post) {
+      return {
+        ...basePayload,
+        title: `${post.title} | ${siteName}`,
+        description: buildExcerpt(post.writeUp || post.description, 160),
+        keywords: joinSeoKeywords(
+          `${post.title}, ${post.category || 'blog'}, Stars777 blog`,
+          seo.keywords,
+        ),
+        ogImageUrl: toAbsoluteAssetUrl(canonicalBase, post.imageUrl || defaultOgImage),
+        ogImageAlt: post.title,
+      };
+    }
+  }
+
+  if (pathname === '/contact') {
+    return {
+      ...basePayload,
+      title: `Contact | ${siteName}`,
+      description: 'Contact Stars777 support for help with payments, gameplay, or account questions.',
+      keywords: joinSeoKeywords('Stars777 contact, support, customer help, gaming support', seo.keywords),
+    };
+  }
+
+  if (pathname === '/faq') {
+    return {
+      ...basePayload,
+      title: `Frequently Asked Questions | ${siteName}`,
+      description: 'Find answers to common Stars777 questions about gameplay, support, and account access.',
+      keywords: joinSeoKeywords('Stars777 FAQ, help center, common questions, support answers', seo.keywords),
+    };
+  }
+
+  if (pathname === '/terms-of-service') {
+    return {
+      ...basePayload,
+      title: `Terms of Service | ${siteName}`,
+      description:
+        'Read the Stars777 Terms of Service, account responsibilities, prohibited conduct, and legal conditions of use.',
+      keywords: joinSeoKeywords('Stars777 terms of service, terms and conditions, legal terms, user agreement', seo.keywords),
+    };
+  }
+
+  if (pathname === '/privacy-policy') {
+    return {
+      ...basePayload,
+      title: `Privacy Policy | ${siteName}`,
+      description: 'Read how Stars777 handles account, device, contact, and support information across the platform.',
+      keywords: joinSeoKeywords('Stars777 privacy policy, data protection, privacy notice, user privacy', seo.keywords),
+    };
+  }
+
+  return basePayload;
+}
+
+function applySeoToHtml(html, seo) {
+  const updates = [
+    replaceTagContent(html, /<title>.*?<\/title>/is, `<title>${escapeHtml(seo.title)}</title>`),
+  ];
+  let nextHtml = updates[0];
+
+  nextHtml = replaceMetaTag(nextHtml, 'name', 'robots', seo.robots);
+  nextHtml = replaceMetaTag(nextHtml, 'name', 'description', seo.description);
+  nextHtml = replaceMetaTag(nextHtml, 'name', 'keywords', seo.keywords);
+  nextHtml = replaceMetaTag(nextHtml, 'property', 'og:title', seo.title);
+  nextHtml = replaceMetaTag(nextHtml, 'property', 'og:description', seo.description);
+  nextHtml = replaceMetaTag(nextHtml, 'property', 'og:url', seo.canonical);
+  nextHtml = replaceMetaTag(nextHtml, 'property', 'og:site_name', seo.siteName);
+  nextHtml = replaceMetaTag(nextHtml, 'property', 'og:image', seo.ogImageUrl);
+  nextHtml = replaceMetaTag(nextHtml, 'property', 'og:image:alt', seo.ogImageAlt);
+  nextHtml = replaceMetaTag(nextHtml, 'property', 'og:type', 'website');
+  nextHtml = replaceMetaTag(nextHtml, 'name', 'twitter:card', seo.ogImageUrl ? 'summary_large_image' : 'summary');
+  nextHtml = replaceMetaTag(nextHtml, 'name', 'twitter:title', seo.title);
+  nextHtml = replaceMetaTag(nextHtml, 'name', 'twitter:description', seo.description);
+  nextHtml = replaceMetaTag(nextHtml, 'name', 'twitter:url', seo.canonical);
+  nextHtml = replaceMetaTag(nextHtml, 'name', 'twitter:image', seo.ogImageUrl);
+  nextHtml = replaceCanonicalTag(nextHtml, seo.canonical);
+
+  return nextHtml;
+}
+
+function replaceTagContent(html, pattern, replacement) {
+  if (pattern.test(html)) {
+    return html.replace(pattern, replacement);
+  }
+
+  return html.replace('</head>', `  ${replacement}\n  </head>`);
+}
+
+function replaceMetaTag(html, attribute, value, content) {
+  const escapedValue = escapeRegExp(value);
+  const pattern = new RegExp(`<meta[^>]+${attribute}=["']${escapedValue}["'][^>]*>`, 'i');
+  const tag = `<meta ${attribute}="${escapeHtmlAttribute(value)}" content="${escapeHtmlAttribute(content)}" />`;
+
+  if (pattern.test(html)) {
+    return html.replace(pattern, tag);
+  }
+
+  return html.replace('</head>', `  ${tag}\n  </head>`);
+}
+
+function replaceCanonicalTag(html, href) {
+  const tag = `<link rel="canonical" href="${escapeHtmlAttribute(href)}" />`;
+  const pattern = /<link[^>]+rel=["']canonical["'][^>]*>/i;
+
+  if (pattern.test(html)) {
+    return html.replace(pattern, tag);
+  }
+
+  return html.replace('</head>', `  ${tag}\n  </head>`);
+}
+
+function normalizeSeoPath(value) {
+  const normalized = String(value || '/').trim() || '/';
+  if (normalized === '/') {
+    return '/';
+  }
+
+  return normalized.replace(/\/+$/, '') || '/';
+}
+
+function resolveCanonicalBaseUrl(req, configuredCanonicalUrl) {
+  const requestBaseUrl = getPublicBaseUrl(req);
+  const baseUrl = String(configuredCanonicalUrl || '').trim() || requestBaseUrl;
+  try {
+    const configuredUrl = new URL(baseUrl);
+    const requestUrl = new URL(requestBaseUrl);
+
+    if (!isLocalHostName(requestUrl.hostname) && configuredUrl.hostname !== requestUrl.hostname) {
+      return requestUrl.origin;
+    }
+
+    return configuredUrl.origin;
+  } catch {
+    return requestBaseUrl;
+  }
+}
+
+function isLocalHostName(hostname) {
+  const normalized = String(hostname || '').trim().toLowerCase();
+  return normalized === 'localhost' || normalized === '127.0.0.1' || normalized === '::1';
+}
+
+function toAbsoluteAssetUrl(baseUrl, assetUrl) {
+  const value = String(assetUrl || '').trim();
+  if (!value) {
+    return '';
+  }
+
+  return toAbsolutePublicUrl(baseUrl, value);
+}
+
+function buildExcerpt(value, maxLength = 160) {
+  const text = String(value || '')
+    .replace(/!\[(.*?)\]\((.+?)\)/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\[center\]([\s\S]*?)\[\/center\]/gi, '$1')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!text) {
+    return 'Discover the latest updates from the Stars777 team.';
+  }
+
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  return `${text.slice(0, Math.max(0, maxLength - 3)).trim()}...`;
+}
+
+function joinSeoKeywords(...values) {
+  return values
+    .map((value) => String(value || '').trim())
+    .filter(Boolean)
+    .join(', ');
+}
+
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function escapeHtmlAttribute(value) {
+  return escapeHtml(value).replace(/"/g, '&quot;');
+}
+
+function escapeRegExp(value) {
+  return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function buildSitemapEntry(baseUrl, pathname, options = {}) {

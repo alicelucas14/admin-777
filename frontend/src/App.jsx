@@ -12,6 +12,7 @@ const BlogPage = lazy(() => import('./pages/BlogPage'))
 const BlogDetailPage = lazy(() => import('./pages/BlogDetailPage'))
 const ContactPage = lazy(() => import('./pages/ContactPage'))
 const FaqPage = lazy(() => import('./pages/FaqPage'))
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
 const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage'))
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/blog/:slug" element={<BlogDetailPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/faq" element={<FaqPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/terms-of-service" element={<TermsOfServicePage />} />
           <Route path="/admin/*" element={<AdminPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />

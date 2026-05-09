@@ -26,13 +26,13 @@ function SeoManager() {
 
     const updateSeo = async () => {
       try {
-        const response = await fetch(`${publicApiBase}/site-settings`)
+        const [settingsResponse, detailResponse] = await Promise.all([
+          fetch(`${publicApiBase}/site-settings`),
+          fetchDetailSeoResource(publicApiBase, location.pathname),
+        ])
 
-        if (!response.ok) {
-          return
-        }
-
-        const settings = await response.json()
+        const settings = settingsResponse.ok ? await settingsResponse.json() : null
+        const detail = detailResponse && detailResponse.ok ? await detailResponse.json() : null
         if (!isMounted) {
           return
         }
@@ -41,6 +41,7 @@ function SeoManager() {
           pathname: location.pathname,
           pageSeo,
           settings,
+          detail,
         }))
       } catch {
         // SEO falls back to the static index.html tags when the API is unavailable.
@@ -77,27 +78,55 @@ function applySeo(payload) {
   setCanonical(payload.canonical)
 }
 
-function buildSeoPayload({ pathname, pageSeo, settings }) {
+function buildSeoPayload({ pathname, pageSeo, settings, detail }) {
   const siteName = settings?.siteName || 'Stars777'
   const seo = settings?.seo || {}
-  const canonicalBase = seo.canonicalUrl || window.location.origin
+  const canonicalBase = resolveCanonicalBase(seo.canonicalUrl)
   const canonical = new URL(pathname, canonicalBase).toString()
   const fallbackTitle = seo.title || `${siteName} - Online Gaming Platform`
-  const pageTitle = pageSeo.title ? `${pageSeo.title} | ${siteName}` : fallbackTitle
+  const detailSeo = buildDetailSeo(pathname, detail)
+  const pageTitle = detailSeo.title || (pageSeo.title ? `${pageSeo.title} | ${siteName}` : fallbackTitle)
 
   return {
     title: pageTitle,
     description:
+      detailSeo.description ||
       pageSeo.description ||
       seo.description ||
       'Stars777 online gaming platform with games, support, and fast access.',
-    keywords: joinKeywords(pageSeo.keywords, seo.keywords),
+    keywords: joinKeywords(detailSeo.keywords, pageSeo.keywords, seo.keywords),
     robots: 'index,follow,max-image-preview:large',
     canonical,
     siteName,
-    ogImageUrl: seo.ogImageUrl || `${window.location.origin}/Stars777-Logo.png`,
-    ogImageAlt: `${siteName} brand image`,
+    ogImageUrl: detailSeo.ogImageUrl || seo.ogImageUrl || `${window.location.origin}/Stars777-Logo.png`,
+    ogImageAlt: detailSeo.ogImageAlt || `${siteName} brand image`,
   }
+}
+
+function resolveCanonicalBase(configuredCanonicalUrl) {
+  const requestOrigin = window.location.origin
+  const requestHost = window.location.hostname
+
+  if (!configuredCanonicalUrl) {
+    return requestOrigin
+  }
+
+  try {
+    const configuredUrl = new URL(configuredCanonicalUrl)
+
+    if (!isLocalHostName(requestHost) && configuredUrl.hostname !== requestHost) {
+      return requestOrigin
+    }
+
+    return configuredUrl.origin
+  } catch {
+    return requestOrigin
+  }
+}
+
+function isLocalHostName(hostname) {
+  const normalized = String(hostname || '').trim().toLowerCase()
+  return normalized === 'localhost' || normalized === '127.0.0.1' || normalized === '::1'
 }
 
 function getPageSeo(pathname) {
@@ -173,11 +202,95 @@ function getPageSeo(pathname) {
     }
   }
 
+  if (pathname === '/privacy-policy') {
+    return {
+      title: 'Privacy Policy',
+      description:
+        'Read how Stars777 handles account, device, contact, and support information across the platform.',
+      keywords: 'Stars777 privacy policy, data protection, privacy notice, user privacy',
+    }
+  }
+
   return {
     title: '',
     description: '',
     keywords: '',
   }
+}
+
+async function fetchDetailSeoResource(publicApiBase, pathname) {
+  if (pathname.startsWith('/games/')) {
+    const slug = pathname.slice('/games/'.length)
+    return fetch(`${publicApiBase}/games/${slug}`)
+  }
+
+  if (pathname.startsWith('/blog/')) {
+    const slug = pathname.slice('/blog/'.length)
+    return fetch(`${publicApiBase}/blog-posts/${slug}`)
+  }
+
+  return null
+}
+
+function buildDetailSeo(pathname, detail) {
+  if (!detail) {
+    return {
+      title: '',
+      description: '',
+      keywords: '',
+      ogImageUrl: '',
+      ogImageAlt: '',
+    }
+  }
+
+  if (pathname.startsWith('/games/')) {
+    return {
+      title: `${detail.title} Review | Stars777`,
+      description: buildExcerpt(detail.writeUp || detail.description, 160),
+      keywords: `${detail.title}, ${detail.genre || 'game'} review, Stars777 ${detail.title}`,
+      ogImageUrl: detail.imageUrl || '',
+      ogImageAlt: detail.title || '',
+    }
+  }
+
+  if (pathname.startsWith('/blog/')) {
+    return {
+      title: `${detail.title} | Stars777`,
+      description: buildExcerpt(detail.writeUp || detail.description, 160),
+      keywords: `${detail.title}, ${detail.category || 'blog'}, Stars777 blog`,
+      ogImageUrl: detail.imageUrl || '',
+      ogImageAlt: detail.title || '',
+    }
+  }
+
+  return {
+    title: '',
+    description: '',
+    keywords: '',
+    ogImageUrl: '',
+    ogImageAlt: '',
+  }
+}
+
+function buildExcerpt(value, maxLength = 160) {
+  const text = String(value || '')
+    .replace(/!\[(.*?)\]\((.+?)\)/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\[center\]([\s\S]*?)\[\/center\]/gi, '$1')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  if (!text) {
+    return 'Discover the latest updates from the Stars777 team.'
+  }
+
+  if (text.length <= maxLength) {
+    return text
+  }
+
+  return `${text.slice(0, Math.max(0, maxLength - 3)).trim()}...`
 }
 
 function joinKeywords(pageKeywords, globalKeywords) {

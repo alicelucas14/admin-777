@@ -41,7 +41,7 @@ function Footer() {
             <a href="/">Home</a>
             <a href="/privacy-policy">Privacy Policy</a>
             <a href="/terms-of-service">Terms of Service</a>
-            <a href="/sitemap">Sitemap</a>
+            <a href="/sitemap.xml">Sitemap</a>
             {liveChatHref ? (
               <a href={liveChatHref} target="_blank" rel="noopener noreferrer">
                 Live Chat

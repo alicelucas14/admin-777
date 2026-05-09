@@ -109,9 +109,9 @@ function RummySectionSettingsSection({ siteSettings, onUpdateSettings }) {
           <label>
             <span>Section Image URL</span>
             <input
-              type="url"
+              type="text"
               value={sectionFields.imageUrl}
-              placeholder="https://example.com/rummy-section-image.webp"
+              placeholder="https://example.com/rummy-section-image.webp or /uploads/..."
               onChange={(event) => updateSectionField('imageUrl', event.target.value)}
             />
           </label>

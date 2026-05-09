@@ -198,8 +198,8 @@ function PromotionSection({
               required
             />
             <input
-              type="url"
-              placeholder="Image URL"
+              type="text"
+              placeholder="Image URL or /uploads/..."
               value={formData.imageUrl}
               onChange={(event) =>
                 setFormData((current) => ({ ...current, imageUrl: event.target.value }))

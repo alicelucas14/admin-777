@@ -81,9 +81,9 @@ function SeoSettingsSection({ seo, onUpdateSeo }) {
             <span>Social Share Image URL</span>
             <input
               name="ogImageUrl"
-              type="url"
+              type="text"
               defaultValue={seo?.ogImageUrl || ''}
-              placeholder="https://example.com/share-image.webp"
+              placeholder="https://example.com/share-image.webp or /uploads/..."
             />
           </label>
 

@@ -207,8 +207,8 @@ function ReviewsSection({ reviews, onCreateReview, onUpdateReview, onDeleteRevie
               required
             />
             <input
-              type="url"
-              placeholder="Reviewer image URL"
+              type="text"
+              placeholder="Reviewer image URL or /uploads/..."
               value={formData.imageUrl}
               onChange={(event) =>
                 setFormData((current) => ({ ...current, imageUrl: event.target.value }))

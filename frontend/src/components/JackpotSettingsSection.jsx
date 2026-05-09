@@ -154,9 +154,9 @@ function JackpotSettingsSection({ siteSettings, onUpdateSettings }) {
                 <label>
                   <span>Image URL</span>
                   <input
-                    type="url"
+                    type="text"
                     value={row.imageUrl || ''}
-                    placeholder="https://example.com/jackpot-card.webp"
+                    placeholder="https://example.com/jackpot-card.webp or /uploads/..."
                     onChange={(event) => updateJackpotRow(row.id, 'imageUrl', event.target.value)}
                   />
                 </label>

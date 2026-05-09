@@ -211,8 +211,8 @@ function GamesSection({ games, onCreateGame, onUpdateGame, onDeleteGame, onBulkA
               rows={3}
             />
             <input
-              type="url"
-              placeholder="Image URL"
+              type="text"
+              placeholder="Image URL or /uploads/..."
               value={formData.imageUrl}
               onChange={(event) =>
                 setFormData((current) => ({ ...current, imageUrl: event.target.value }))

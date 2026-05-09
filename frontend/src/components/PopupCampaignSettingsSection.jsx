@@ -251,9 +251,9 @@ function PopupCampaignSettingsSection({ siteSettings, onUpdateSettings }) {
                         <label>
                           <span>Image URL</span>
                           <input
-                            type="url"
+                            type="text"
                             value={slide.imageUrl}
-                            placeholder="https://example.com/popup-image.webp"
+                            placeholder="https://example.com/popup-image.webp or /uploads/..."
                             onChange={(event) => handleSlideChange(index, 'imageUrl', event.target.value)}
                           />
                         </label>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-function TermsConditionsSection({ termsPage, onUpdateTerms }) {
+function TermsConditionsSection({ termsPage, privacyPage, onUpdateTerms }) {
   const [submitError, setSubmitError] = useState('')
   const [submitMessage, setSubmitMessage] = useState('')
   const [isSaving, setIsSaving] = useState(false)
@@ -13,8 +13,12 @@ function TermsConditionsSection({ termsPage, onUpdateTerms }) {
     const formData = new FormData(event.currentTarget)
     const payload = {
       termsPage: {
-        title: String(formData.get('title') || ''),
-        body: String(formData.get('body') || ''),
+        title: String(formData.get('termsTitle') || ''),
+        body: String(formData.get('termsBody') || ''),
+      },
+      privacyPage: {
+        title: String(formData.get('privacyTitle') || ''),
+        body: String(formData.get('privacyBody') || ''),
       },
     }
 
@@ -41,23 +45,43 @@ function TermsConditionsSection({ termsPage, onUpdateTerms }) {
         </div>
 
         <form className="settings-editor-form terms-editor-form" onSubmit={handleSubmit}>
+          <div className="settings-form-divider">
+            <h4>Terms of Service</h4>
+          </div>
           <label>
             <span>Page Title</span>
-            <input name="title" defaultValue={termsPage?.title || ''} />
+            <input name="termsTitle" defaultValue={termsPage?.title || ''} />
           </label>
           <label>
             <span>Terms Body</span>
             <textarea
-              name="body"
+              name="termsBody"
               rows={18}
               defaultValue={termsPage?.body || ''}
               placeholder="Add the full terms and conditions text here"
             />
           </label>
 
+          <div className="settings-form-divider">
+            <h4>Privacy Policy</h4>
+          </div>
+          <label>
+            <span>Privacy Policy Title</span>
+            <input name="privacyTitle" defaultValue={privacyPage?.title || ''} />
+          </label>
+          <label>
+            <span>Privacy Policy Body</span>
+            <textarea
+              name="privacyBody"
+              rows={18}
+              defaultValue={privacyPage?.body || ''}
+              placeholder="Add the full privacy policy text here"
+            />
+          </label>
+
           <div className="settings-editor-actions">
             <button type="submit" disabled={isSaving}>
-              {isSaving ? 'Saving...' : 'Save Terms'}
+              {isSaving ? 'Saving...' : 'Save Legal Pages'}
             </button>
           </div>
 

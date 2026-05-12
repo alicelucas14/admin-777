@@ -316,8 +316,12 @@ function AdminPage() {
     if (activePanel === 'terms-conditions') {
       return (
         <TermsConditionsSection
-          key={JSON.stringify(data.siteSettings?.termsPage || {})}
+          key={JSON.stringify({
+            termsPage: data.siteSettings?.termsPage || {},
+            privacyPage: data.siteSettings?.privacyPage || {},
+          })}
           termsPage={data.siteSettings?.termsPage}
+          privacyPage={data.siteSettings?.privacyPage}
           onUpdateTerms={updateSiteSettings}
         />
       )

@@ -59,6 +59,22 @@ function buildDefaultTermsPage() {
   };
 }
 
+function buildDefaultPrivacyPage() {
+  return {
+    title: 'Privacy Policy',
+    body: [
+      'This Privacy Policy explains how Stars777 handles information you share with us when you browse the website, contact support, submit forms, or use platform features.',
+      '1. Information We Collect\n\nWe may collect contact details, messages you send through forms, support conversations, device and browser information, and general usage data needed to operate, secure, and improve the platform.',
+      '2. How We Use Information\n\nStars777 uses this information to respond to support requests, maintain the website, analyze performance, prevent abuse, deliver service updates, and improve the overall player experience.',
+      '3. Cookies And Analytics\n\nThe website may use cookies or similar technologies to remember preferences, understand traffic patterns, and measure feature usage. These tools help us keep the service stable and easier to use.',
+      '4. Sharing And Disclosure\n\nWe do not sell personal information. Data may be shared only with service providers, hosting partners, analytics providers, or legal authorities when operationally necessary or legally required.',
+      '5. Data Security\n\nWe use reasonable administrative and technical safeguards to protect stored information, but no online system can guarantee absolute security. You should also protect your own devices and credentials.',
+      '6. Your Choices\n\nYou can limit what information you submit, request updates to incorrect details, or contact support if you want information removed where applicable. Operational or legal retention requirements may still apply.',
+      '7. Policy Updates\n\nThis policy may be updated from time to time. Continued use of the website after changes are published means the revised policy applies from the posted effective date.',
+    ].join('\n\n'),
+  };
+}
+
 function buildDefaultContactPage() {
   return {
     title: 'Contact Us',
@@ -394,6 +410,7 @@ const store = {
     supportEmail: 'support@stars777.example',
     footerCopyrightText: 'Copyright C 2024 Stars777 | Powered by Stars777',
     termsPage: buildDefaultTermsPage(),
+    privacyPage: buildDefaultPrivacyPage(),
     contactPage: buildDefaultContactPage(),
     homepageFaqSection: buildDefaultHomepageFaqSection(),
     popupCampaign: buildDefaultPopupCampaign(),
@@ -1773,6 +1790,7 @@ function sanitizeSiteSettingsPayload(payload) {
     footerCopyrightText:
       String(payload.footerCopyrightText || '').trim() || store.siteSettings.footerCopyrightText,
     termsPage: sanitizeTermsPageSettings(payload.termsPage || {}),
+    privacyPage: sanitizePrivacyPageSettings(payload.privacyPage || {}),
     contactPage: sanitizeContactPageSettings(payload.contactPage || {}),
     homepageFaqSection: sanitizeHomepageFaqSectionSettings(payload.homepageFaqSection || {}),
     popupCampaign: sanitizePopupCampaignSettings(payload.popupCampaign || {}),
@@ -1785,6 +1803,15 @@ function sanitizeSiteSettingsPayload(payload) {
 
 function sanitizeTermsPageSettings(payload) {
   const fallback = store.siteSettings?.termsPage || buildDefaultTermsPage();
+
+  return {
+    title: String(payload.title || '').trim() || fallback.title,
+    body: String(payload.body || '').trim() || fallback.body,
+  };
+}
+
+function sanitizePrivacyPageSettings(payload) {
+  const fallback = store.siteSettings?.privacyPage || buildDefaultPrivacyPage();
 
   return {
     title: String(payload.title || '').trim() || fallback.title,
@@ -1812,6 +1839,7 @@ function loadSiteSettings() {
       ...store.siteSettings,
       ...savedSettings,
       termsPage: sanitizeTermsPageSettings(savedSettings.termsPage || {}),
+      privacyPage: sanitizePrivacyPageSettings(savedSettings.privacyPage || {}),
       seo: sanitizeSeoPayload(savedSettings.seo || store.siteSettings.seo || {}),
       contactPage: sanitizeContactPageSettings(
         savedSettings.contactPage || {},

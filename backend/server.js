@@ -392,6 +392,7 @@ const store = {
     defaultLanguage: 'en-US',
     maintenanceMode: false,
     supportEmail: 'support@stars777.example',
+    footerCopyrightText: 'Copyright C 2024 Stars777 | Powered by Stars777',
     termsPage: buildDefaultTermsPage(),
     contactPage: buildDefaultContactPage(),
     homepageFaqSection: buildDefaultHomepageFaqSection(),
@@ -1769,6 +1770,8 @@ function sanitizeSiteSettingsPayload(payload) {
       String(payload.defaultLanguage || '').trim() || store.siteSettings.defaultLanguage,
     maintenanceMode: Boolean(payload.maintenanceMode),
     supportEmail: String(payload.supportEmail || '').trim() || store.siteSettings.supportEmail,
+    footerCopyrightText:
+      String(payload.footerCopyrightText || '').trim() || store.siteSettings.footerCopyrightText,
     termsPage: sanitizeTermsPageSettings(payload.termsPage || {}),
     contactPage: sanitizeContactPageSettings(payload.contactPage || {}),
     homepageFaqSection: sanitizeHomepageFaqSectionSettings(payload.homepageFaqSection || {}),

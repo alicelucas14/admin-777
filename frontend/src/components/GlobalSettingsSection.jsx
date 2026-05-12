@@ -26,6 +26,7 @@ function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
       defaultLanguage: String(formData.get('defaultLanguage') || ''),
       maintenanceMode: formData.get('maintenanceMode') === 'on',
       supportEmail: String(formData.get('supportEmail') || ''),
+      footerCopyrightText: String(formData.get('footerCopyrightText') || ''),
       socialLinks: socialRows
         .map((row) => ({
           id: row.id,
@@ -150,6 +151,14 @@ function GlobalSettingsSection({ siteSettings, onUpdateSettings }) {
           <label>
             <span>Support Email</span>
             <input name="supportEmail" type="email" defaultValue={siteSettings?.supportEmail || ''} />
+          </label>
+          <label>
+            <span>Footer Copyright Text</span>
+            <input
+              name="footerCopyrightText"
+              defaultValue={siteSettings?.footerCopyrightText || ''}
+              placeholder="Copyright C 2024 Stars777 | Powered by Stars777"
+            />
           </label>
           <label className="settings-checkbox-label">
             <input

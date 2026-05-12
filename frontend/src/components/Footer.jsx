@@ -28,6 +28,9 @@ function Footer() {
   const socialLinks = normalizeSocialLinks(siteSettings?.socialLinks)
   const withdrawalPartners = normalizeWithdrawalPartners(siteSettings?.withdrawalPartners)
   const siteName = siteSettings?.siteName || 'Stars777'
+  const footerCopyrightText =
+    String(siteSettings?.footerCopyrightText || '').trim() ||
+    `Copyright C 2024 ${siteName} | Powered by ${siteName}`
   const youtubeLink = socialLinks.find((item) => item.platform.toLowerCase() === 'youtube')
   const liveChatLink = String(siteSettings?.contactPage?.liveChatLink || '').trim()
   const liveChatHref = liveChatLink.startsWith('http') ? liveChatLink : ''
@@ -132,7 +135,7 @@ function Footer() {
         </section>
       </div>
 
-      <div className="footer-copyright">Copyright C 2024 {siteName} | Powered by {siteName}</div>
+      <div className="footer-copyright">{footerCopyrightText}</div>
     </footer>
   )
 }
